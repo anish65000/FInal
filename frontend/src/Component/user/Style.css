@@ -1,0 +1,13 @@
+/* styles.css */
+
+.map-container {
+    position: relative;
+    height: 400px;
+  }
+  
+  .map-container .leaflet-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;  
+  }
