@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useStaff } from './StaffContext'; 
+import { useStaff } from '../Staff/StaffContext';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import StaffNavbar from '../Staff/StaffNavbar';
+import StaffSidebar from '../Staff/StaffSidebar';
 
 const ViewDonation = () => {
   const { state } = useStaff();
@@ -42,7 +44,6 @@ const ViewDonation = () => {
       }
 
       console.log('Donation Status Update Response:', response.data);
-
       fetchDonations();
     } catch (error) {
       console.error('Error updating donation status:', error);
@@ -57,82 +58,102 @@ const ViewDonation = () => {
   }, [isLoggedIn, stfStaffType]);
 
   return (
-    <div className="container mx-auto px-4 pb-16">
-      <h2 className="text-center text-3xl font-bold mb-8">Manage Donations</h2>
+    <>
+    <StaffNavbar />
+    <StaffSidebar/>
+    <div className="flex flex-col h-screen justify-center items-center">
+      
+      <div className="w-full max-w-4xl bg-green rounded-lg shadow-md p-6">
+        <h2 className="text-center text-4xl font-bold mb-8 text-blue-800">Manage Donations</h2>
 
-      {isLoggedIn && (stfStaffType === "Staff" || stfStaffType === "Admin") ? (
-        <div className="flex flex-col bg-white rounded-lg shadow-md p-4">
-          <div className="bg-green py-4 px-6 rounded-lg mb-4">
-            <h3 className="text-black font-medium mb-2">Donate Blood - Save Lives!</h3>
-            <p className="text-black text-sm">
-              We're currently in need of blood donations of all types. Please consider
-              donating if you're eligible. Visit our{" "}
-              <a href="#" className="text-blue-500">donation page</a> for more information and to schedule an appointment.
-            </p>
+        {isLoggedIn && (stfStaffType === 'Staff' || stfStaffType === 'Admin') ? (
+          <div className="flex flex-col">
+            <div className="bg-green-500 py-4 px-6 rounded-lg mb-4 text-white shadow-md">
+              <h3 className="text-2xl font-medium mb-2">Donate Blood - Save Lives!</h3>
+              <p className="text-lg">
+                We're currently in need of blood donations of all types. Please consider
+                donating if you're eligible. Visit our{' '}
+                <a href="#" className="text-blue-300 hover:text-blue-400 font-medium">
+                  donation page
+                </a>{' '}
+                for more information and to schedule an appointment.
+              </p>
+            </div>
+
+            <ul className="mt-4 space-y-4">
+              {donations.map((donation) => (
+                <li key={donation.id}>
+                  <div className="grid grid-cols-2 bg-white rounded-lg shadow-md p-4">
+                    <div className="col-span-1">
+                      <strong className="text-blue-800 text-lg">{donation.name}</strong>
+                      <div className="text-gray-600 mt-2 flex flex-wrap">
+                        <span className="mr-6 mb-2">
+                          <strong>Age:</strong> {donation.age}
+                        </span>
+                        <span className="mr-6 mb-2">
+                          <strong>Gender:</strong> {donation.gender}
+                        </span>
+                        <span className="mr-6 mb-2">
+                          <strong>Blood Group:</strong> {donation.blood_group}
+                        </span>
+                        <span className="mb-2">
+                          <strong>Units:</strong> {donation.units}
+                        </span>
+                      </div>
+                      <div className="text-gray-600 mt-2 flex flex-wrap">
+                        <span className="mr-6 mb-2">
+                          <strong>Disease:</strong> {donation.disease || 'N/A'}
+                        </span>
+                        <span className="mr-6 mb-2">
+                          <strong>Reason:</strong> {donation.reason || 'N/A'}
+                        </span>
+                        <span className="mb-2">
+                          <strong>Date:</strong> {donation.date}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-span-1 flex items-center justify-end">
+                      <span
+                        className={`font-medium rounded-full px-2 py-1 ${
+                          donation.status === 'approved'
+                            ? 'bg-green  text-white'
+                            : 'bg-red  text-white'
+                        }`}
+                      >
+                        Donation status {donation.status}
+                      </span>
+                      <div className="ml-4">
+                        <button
+                          onClick={() => handleStatusChange(donation.id, 'approved')}
+                          className="bg-green hover:bg-green text-white font-bold py-2 px-4 rounded mr-2"
+                        >
+                          Approve
+                        </button>
+                        
+                        <br/>
+
+                        <button
+                      
+                          onClick={() => handleStatusChange(donation.id, 'declined')}
+                          className="bg-red hover:bg-green text-white font-bold py-2 px-4 rounded"
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-
-          <ul className="mt-4">
-            {donations.map((donation) => (
-              <li key={donation.id} className="mb-6">
-                <div className="grid grid-cols-2 bg-green">
-                  <div className="col-span-1">
-                    <strong className="text-primary">Name: {donation.name}</strong>
-                    <div className="text-muted mt-1 flex flex-wrap">
-                      <span className="mr-20 mb-6">
-                        <strong>Age:</strong> {donation.age}
-                      </span>
-                      <span className="mr-20 mb-2">
-                        <strong>Gender:</strong> {donation.gender}
-                      </span>
-                      <span className="mr-20 mb-2">
-                        <strong>Blood Group:</strong> {donation.blood_group}
-                      </span>
-                      <span className="mb-2">
-                        <strong>Units:</strong> {donation.units}
-                      </span>
-                    </div>
-                    <div className="text-muted mt-1 flex flex-wrap">
-                      <span className="mr-20 mb-2">
-                        <strong>Disease:</strong> {donation.disease || "N/A"}
-                      </span>
-                      <span className="mr-20 mb-2">
-                        <strong>Reason:</strong> {donation.reason || "N/A"}
-                      </span>
-                      <span className="mb-6">
-                        <strong>Date:</strong> {donation.date}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-span-1 flex items-center justify-end">
-                    <span className="font-medium bg-red text-dark rounded-full px-2 py-1">
-                      Donation status {donation.status}
-                    </span>
-                    <div className="ml-4">
-                      <button
-                        onClick={() => handleStatusChange(donation.id, 'approved')}
-                        className="bg-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-2"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleStatusChange(donation.id, 'declined')}
-                        className="bg-red hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-                      >
-                        Decline
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p className="text-center text-lg mt-8">
-          You do not have permission to view this page.
-        </p>
-      )}
+        ) : (
+          <p className="text-center text-lg mt-8 text-gray-700">
+            You do not have permission to view this page.
+          </p>
+        )}
+      </div>
     </div>
+    </>
   );
 };
 

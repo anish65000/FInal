@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import StaffNavbar from '../Staff/StaffNavbar';
+import StaffSidebar from '../Staff/StaffSidebar';
 
 const RegisterBloodBankForm = () => {
   const [formData, setFormData] = useState({
@@ -70,10 +72,15 @@ const RegisterBloodBankForm = () => {
   return (
     <div>
        <ToastContainer />
-      <div className="flex justify-between items-center px-4 py-2 ">
-        <h3 className="text-2xl font-[Elephant] text-custom-green hover:text-custom-green font-bold transition duration-300 ease-in-out">
-          Register Blood Bank
-        </h3>
+       <div className="home bg-pro-white flex flex-col flex-grow ">
+      <StaffSidebar />
+      <div className="flex flex-col flex-grow">
+        <StaffNavbar />
+        <div className="container mx-auto p-4">
+          <div className="flex items-center justify-between mb-4"></div>
+      <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+      Register Blood Banks
+      </h2>
       </div>
       <hr className="border-t border-gray-500 mx-4" />
 
@@ -243,6 +250,7 @@ const RegisterBloodBankForm = () => {
         </button>
       </form>
     </div>
+    </div></div> 
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './StaffNavbar';
+import StaffSidebar from './StaffSidebar';
 
 const BloodStockComponent = () => {
   const [bloodStockList, setBloodStockList] = useState([]);
@@ -12,6 +13,7 @@ const BloodStockComponent = () => {
   });
 
   const [editingBloodStockId, setEditingBloodStockId] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar visibility
 
   // Fetch blood stock data when the component mounts
   useEffect(() => {
@@ -87,94 +89,102 @@ const BloodStockComponent = () => {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto p-4 text-lg">
-      <h1 className="text-4xl font-bold mb-4">Blood Stock Management</h1>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 rounded-lg table-auto">
-          <thead>
-            <tr className="bg-green text-left text-sm font-medium uppercase tracking-wider">
-              <th className="py-4 px-6 border border-gray">Blood Group</th>
-              <th className="py-4 px-6 border border-gray">Total Units</th>
-              <th className="py-4 px-6 border border-gray">Current Stock</th>
-              <th className="py-4 px-6 border border-gray">Blood Status</th>
-              <th className="py-4 px-6 border border-gray">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bloodStockList.map((bloodStock, index) => (
-              <React.Fragment key={bloodStock.id || index}>
-                <tr>
-                  <td>{bloodStock.blood_group}</td>
-                  <td>
-                    {editingBloodStockId === bloodStock.id ? (
-                      <input
-                        type="number"
-                        value={bloodStock.total_unit}
-                        onChange={(e) => setBloodStockList(prevList =>
-                          prevList.map(item => (item.id === bloodStock.id ? { ...item, total_unit: Number(e.target.value) } : item))
-                        )}
-                      />
-                    ) : (
-                      bloodStock.total_unit
-                    )}
-                  </td>
-                  <td>
-                    {editingBloodStockId === bloodStock.id ? (
-                      <input
-                        type="number"
-                        value={bloodStock.current_stock}
-                        onChange={(e) => setBloodStockList(prevList =>
-                          prevList.map(item => (item.id === bloodStock.id ? { ...item, current_stock: Number(e.target.value) } : item))
-                        )}
-                      />
-                    ) : (
-                      bloodStock.current_stock
-                    )}
-                  </td>
-                  <td>
-                    {editingBloodStockId === bloodStock.id ? (
-                      <input
-                        type="text"
-                        value={bloodStock.blood_status}
-                        onChange={(e) => setBloodStockList(prevList =>
-                          prevList.map(item => (item.id === bloodStock.id ? { ...item, blood_status: e.target.value } : item))
-                        )}
-                      />
-                    ) : (
-                      bloodStock.blood_status
-                    )}
-                  </td>
+      <StaffSidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      <div className={`container mx-auto p-4 text-lg ${isSidebarOpen ? 'ml-64' : ''}`}>
+        {!isSidebarOpen && (
+          <h1 className="text-4xl font-bold mb-4">Blood Stock Management</h1>
+        )}
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg table-auto">
+            <thead>
+              <tr className="bg-green text-left text-sm font-medium uppercase tracking-wider">
+                <th className="py-4 px-6 border border-gray">Blood Group</th>
+                <th className="py-4 px-6 border border-gray">Total Units</th>
+                <th className="py-4 px-6 border border-gray">Current Stock</th>
+                <th className="py-4 px-6 border border-gray">Blood Status</th>
+                <th className="py-4 px-6 border border-gray">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bloodStockList.map((bloodStock, index) => (
+                <React.Fragment key={bloodStock.id || index}>
+                  <tr>
+                    <td>{bloodStock.blood_group}</td>
+                    <td>
+                      {editingBloodStockId === bloodStock.id ? (
+                        <input
+                          type="number"
+                          value={bloodStock.total_unit}
+                          onChange={(e) => setBloodStockList(prevList =>
+                            prevList.map(item => (item.id === bloodStock.id ? { ...item, total_unit: Number(e.target.value) } : item))
+                          )}
+                        />
+                      ) : (
+                        bloodStock.total_unit
+                      )}
+                    </td>
+                    <td>
+                      {editingBloodStockId === bloodStock.id ? (
+                        <input
+                          type="number"
+                          value={bloodStock.current_stock}
+                          onChange={(e) => setBloodStockList(prevList =>
+                            prevList.map(item => (item.id === bloodStock.id ? { ...item, current_stock: Number(e.target.value) } : item))
+                          )}
+                        />
+                      ) : (
+                        bloodStock.current_stock
+                      )}
+                    </td>
+                    <td>
+                      {editingBloodStockId === bloodStock.id ? (
+                        <input
+                          type="text"
+                          value={bloodStock.blood_status}
+                          onChange={(e) => setBloodStockList(prevList =>
+                            prevList.map(item => (item.id === bloodStock.id ? { ...item, blood_status: e.target.value } : item))
+                          )}
+                        />
+                      ) : (
+                        bloodStock.blood_status
+                      )}
+                    </td>
 
-                  <td>
-  {editingBloodStockId === bloodStock.id ? (
-    <button className="text-blue-600" onClick={() => handleUpdateBloodStock(bloodStock.id)}>
-      Save
-    </button>
-  ) : (
-    <>
-      <button className="text-blue-600 mr-2" onClick={() => handleEditBloodStock(bloodStock.id)}>
-        Edit
-      </button>
-      &nbsp; {/* Add a non-breaking space here */}
-      <button className="text-red" onClick={() => handleDeleteBloodStock(bloodStock.id)}>
-        Delete
-      </button>
-    </>
-  )}
-</td>
+                    <td>
+                      {editingBloodStockId === bloodStock.id ? (
+                        <button className="text-blue-600" onClick={() => handleUpdateBloodStock(bloodStock.id)}>
+                          Save
+                        </button>
+                      ) : (
+                        <>
+                          <button className="text-blue-600 mr-2" onClick={() => handleEditBloodStock(bloodStock.id)}>
+                            Edit
+                          </button>
+                          &nbsp; {/* Add a non-breaking space here */}
+                          <button className="text-red" onClick={() => handleDeleteBloodStock(bloodStock.id)}>
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </td>
 
-                </tr>
-                <tr>
-                  <td colSpan="5" className="border-b border-gray-300"></td>
-                </tr>
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
+                  </tr>
+                  <tr>
+                    <td colSpan="5" className="border-b border-gray-300"></td>
+                  </tr>
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {!isSidebarOpen && (
+          <div>
+            <p>Do you want to add blood in stock?</p>
+            {/* Insert blood stock form can go here */}
+          </div>
+        )}
       </div>
-
-      Do you wannt a  add a blood in stock
-    </div>
     </>
   );
 }

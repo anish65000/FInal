@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import UserNavbar from '../UserNavbar';
+import UserSidebar from './UserSidebar';
 
 const PremiumDonorDetails = () => {
   const { id } = useParams();
@@ -141,88 +143,94 @@ const PremiumDonorDetails = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-between">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-800">Donor Details</h2>
-      </div>
-
-      <div className="grid grid-cols-8 bg-green gap-10">
-        <div className="col-span-1">
-          <div className="mb-2 text-gray-700 font-bold">Profile Picture</div>
-          <div className="profile-picture-container rounded-full overflow-hidden">
-            <img
-              src={`http://localhost:5000${donorDetails.profile_picture}`}
-              alt={`${donorDetails.user_name}'s profile`}
-              className="profile-picture w-400 h-300 object-cover"
-              onError={(e) => console.error('Error loading image:', e)}
-            />
+    <>
+      <UserNavbar/>
+      <div className="flex">
+        <UserSidebar /> {/* Render the sidebar component */}
+        <div className=" px-6 flex flex-col items-center justify-between">
+          <div className="flex items-center justify-between mb-4 pt-4">
+            <h2 className="text-xl text-center  font-bold font-['Elephant'] text-custom-green ">DONOR DETAILS</h2>
           </div>
-        </div>
 
-        <div className="col-span-4 p-20">
-          <p className="text-base font-semibold mb-1">Basic Information</p>
-          <p>ID: {donorDetails.premium_donor_id}</p>
-          <p>Name: {donorDetails.userName}</p>
-          <p>Email: {donorDetails.userEmail}</p>
-          <p>Blood Type: {donorDetails.userBloodGroup}</p>
-          <p>Age: {donorDetails.userAge}</p>
-        </div>
-      </div>
+          <div className="grid grid-cols-8 bg-nav-gray  gap-10">
+            <div className="col-span-1 justify-center">
+              <div className="mb-2 text-center  font-medium font-['Elephant'] text-custom-green ">Profile Picture</div>
+              <div className="profile-picture-container rounded-full overflow-hidden">
+                <img
+                  src={`http://localhost:5000${donorDetails.profile_picture}`}
+                  alt={`${donorDetails.user_name}'s profile`}
+                  className="profile-picture w-400 h-300 object-cover"
+                  onError={(e) => console.error('Error loading image:', e)}
+                />
+              </div>
+            </div>
 
-      <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" onClick={handleRequestBlood}>
-        Request Blood
-      </button>
-
-      <button className="bg-red text-white px-4 py-2 rounded-md mt-4" onClick={handleUrgentRequest}>
-        Request Blood Urgently
-      </button>
-
-      {showRequestForm && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-md">
-            <h3 className="text-xl font-bold mb-4">Request Blood</h3>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full h-32 border-gray-300 rounded-md resize-none mb-4"
-              placeholder="Enter your message for blood request..."
-            />
-            <div className="flex justify-end">
-              <button onClick={() => setShowRequestForm(false)} className="text-gray-600 mr-4">Cancel</button>
-              <button onClick={handleSubmitRequest} className="bg-blue-500 text-white px-4 py-2 rounded-md">Submit</button>
+            <div className="col-span-4 p-20">
+              <p className="text-base font-semibold mb-1">Basic Information</p>
+              <p>ID: {donorDetails.premium_donor_id}</p>
+              <p>Name: {donorDetails.userName}</p>
+              <p>Email: {donorDetails.userEmail}</p>
+              <p>Blood Type: {donorDetails.userBloodGroup}</p>
+              <p>Age: {donorDetails.userAge}</p>
             </div>
           </div>
-        </div>
-      )}
+          <button className="bg-pastel-green hover:bg-green-500 text-white px-4 py-2 rounded-md mt-2 mr-2 transition duration-300 ease-in-out" onClick={handleRequestBlood}>
+  Request Blood
+</button>
 
-      {urgentRequestForm && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-md">
-            <h3 className="text-xl font-bold mb-4">Request Blood Urgently</h3>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full h-32 border-gray-300 rounded-md resize-none mb-4"
-              placeholder="Enter your message for urgent blood request..."
-            />
-            <input
-              type="number"
-              value={timeRequiredInMinutes}
-              onChange={(e) => setTimeRequiredInMinutes(e.target.value)}
-              className="w-full border-gray-300 rounded-md mb-4"
-              placeholder="Enter time required in minutes"
-            />
-            <div className="flex justify-end">
-              <button onClick={() => setUrgentRequestForm(false)} className="text-gray mr-4">Cancel</button>
-              <button onClick={handleSubmitUrgentRequest} className="bg-red text-white px-4 py-2 rounded-md">Submit</button>
+<button className="bg-pastel-green hover:bg-green-500 text-white px-4 py-2 rounded-md mt-2 transition duration-300 ease-in-out" onClick={handleUrgentRequest}>
+  Request Blood Urgently
+</button>
+
+
+          {showRequestForm && (
+            <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center">
+              <div className="bg-white p-6 rounded-md">
+                <h3 className="text-xl font-bold mb-4">Request Blood</h3>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="w-full h-32 border-gray-300 rounded-md resize-none mb-4"
+                  placeholder="Enter your message for blood request..."
+                />
+                <div className="flex justify-end">
+                  <button onClick={() => setShowRequestForm(false)} className="text-gray-600 mr-4">Cancel</button>
+                  <button onClick={handleSubmitRequest} className="bg-blue-500 text-white px-4 py-2 rounded-md">Submit</button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      {/* Include ToastContainer to display toasts */}
-      <ToastContainer />
-    </div>
+          {urgentRequestForm && (
+            <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center">
+              <div className="bg-white p-6 rounded-md">
+                <h3 className="text-xl font-bold mb-4">Request Blood Urgently</h3>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="w-full h-32 border-gray-300 rounded-md resize-none mb-4"
+                  placeholder="Enter your message for urgent blood request..."
+                />
+                <input
+                  type="number"
+                  value={timeRequiredInMinutes}
+                  onChange={(e) => setTimeRequiredInMinutes(e.target.value)}
+                  className="w-full border-gray-300 rounded-md mb-4"
+                  placeholder="Enter time required in minutes"
+                />
+                <div className="flex justify-end">
+                  <button onClick={() => setUrgentRequestForm(false)} className="text-gray mr-4">Cancel</button>
+                  <button onClick={handleSubmitUrgentRequest} className="bg-red text-white px-4 py-2 rounded-md">Submit</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Include ToastContainer to display toasts */}
+          <ToastContainer />
+        </div>
+      </div>
+    </>
   );
 };
 

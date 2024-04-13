@@ -16,17 +16,17 @@ const UserSidebar = () => {
   };
 
   return (
-    <aside className="bg-pastel-green text-gray min-h-screen p-4">
+    <aside className="bg-pastel-green text-white min-h-screen p-4">
       <nav>
         <ul className="space-y-2">
           <div className="text-center">
-            <h5 className="text-2xl pl-8 pr-8 text-14 font-normal font-['Elephant'] text-gray hover:text-nav-gray" target="_blank">
+            <h5 className="text-2xl pl-8 pr-8 text-14 font-normal font-['Elephant'] text-white hover:text-nav-white" target="_blank">
               Recipient
             </h5>
           </div>
           <li className="opcion-con-desplegable">
             <div className="flex items-center justify-between p-2 hover:bg-custom-green">
-              <Link to="/" className="flex items-center text-gray">
+              <Link to="/" className="flex items-center text-white">
                 <Home className="mr-2" />
                 <span>Home</span>
               </Link>
@@ -34,7 +34,7 @@ const UserSidebar = () => {
           </li>
           <li className="opcion-con-desplegable">
             <div className="flex items-center justify-between p-2 hover:bg-custom-green">
-              <Link to="/checkcomp" className="flex items-center text-gray">
+              <Link to="/checkcomp" className="flex items-center text-white">
                 <FaMoneyBillWave className="mr-2" />
                 <span>Compabaitility </span>
               </Link>
@@ -42,7 +42,7 @@ const UserSidebar = () => {
           </li>
           <li className="opcion-con-desplegable">
             <div className="flex items-center justify-between p-2 hover:bg-custom-green">
-              <Link to="/bloodrequest" className="flex items-center text-gray">
+              <Link to="/bloodrequest" className="flex items-center text-white">
                 <Inventory className="mr-2" />
                 <span>Blood request</span>
               </Link>
@@ -50,7 +50,7 @@ const UserSidebar = () => {
           </li>
           <li className="opcion-con-desplegable">
             <div className="flex items-center justify-between p-2 hover:bg-custom-green">
-              <Link to="/nearbydonor" className="flex items-center text-gray">
+              <Link to="/nearbydonor" className="flex items-center text-white">
                 <SupervisorAccount className="mr-2" />
                 <span>Nearby donor</span>
               </Link>
@@ -58,7 +58,7 @@ const UserSidebar = () => {
           </li>
           <li className="opcion-con-desplegable">
             <div className="flex items-center justify-between p-2 hover:bg-custom-green">
-              <Link to="/donors" className="flex items-center text-gray">
+              <Link to="/donors" className="flex items-center text-white">
                 <SupervisorAccount className="mr-2" />
                 <span>Donor Request</span>
               </Link>
@@ -66,7 +66,7 @@ const UserSidebar = () => {
           </li>
           <li className="opcion-con-desplegable">
             <div className="flex items-center justify-between p-2 hover:bg-custom-green">
-              <Link to="/Seller/SellerProfile" className="flex items-center text-gray">
+              <Link to="/Seller/SellerProfile" className="flex items-center text-white">
                 <Person2 className="mr-2" />
                 <span>Profile</span>
               </Link>

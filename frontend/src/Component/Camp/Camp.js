@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import StaffSidebar from '../Staff/StaffSidebar';
+import StaffNavbar from '../Staff/StaffNavbar';
 
 function ManageCamp() {
   const [donations, setDonations] = useState([]);
@@ -81,8 +83,18 @@ function ManageCamp() {
   
    
     return (
-      <div className="container mx-auto bg-gray-100 p-8">
-        <h1 className="text-4xl font-bold mt-5 mb-8 text-center text-red-600">Camp Blood Donations</h1>
+      <div className="">
+         <ToastContainer />
+    <div className="home bg-pro-white flex flex-col flex-grow ">
+   <StaffSidebar />
+   <div className="flex flex-col flex-grow">
+     <StaffNavbar />
+     <div className="container mx-auto p-4">
+       <div className="flex items-center justify-between mb-4"></div>
+   
+       <h1 className="text-4xl font-bold mt-5 mb-8 text-center text-red-600">Camp Blood Donations</h1>
+   </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {donations.map((donation) => (
             <div key={donation.id} className="border p-6 bg-green rounded-lg shadow-md">
@@ -192,6 +204,7 @@ function ManageCamp() {
         </div>
         <ToastContainer />
       </div>
+      </div></div>
     );
               }
 

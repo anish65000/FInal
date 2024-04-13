@@ -20,10 +20,10 @@ module.exports = function DonationController(app, db) {
 
       if (userDetails.length > 0 && userDetails[0].userRole === 'Donor') {
         // Destructuring request body
-        const { bank_id, name, age, gender, blood_group, units, disease, reason, status } = req.body;
+        const { bank_id, name, age, gender, blood_group, units, disease, reason,date, status } = req.body;
 
         // Validate input parameters
-        if (!bank_id || !name || !age || !gender || !blood_group || !units || !disease || !reason || !status) {
+        if (!bank_id || !name || !age || !gender || !blood_group || !units || !disease ||  !date || !reason || !status) {
           return res.status(400).json({ message: 'Missing required fields' });
         }
 
@@ -35,7 +35,7 @@ module.exports = function DonationController(app, db) {
         // User exists and is a donor, proceed with the donation insertion
         const [insertResult] = await connection.execute(
           'INSERT INTO blood_donations (user_id, bank_id, name, age, gender, disease, blood_group, units, reason, date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-          [userId, bank_id, name, age, gender, disease, blood_group, units, reason, formattedDate, status]
+          [userId, bank_id, name, age, gender, disease, blood_group, units, reason, date, status]
         );
 
         const newDonationId = insertResult.insertId;
@@ -62,6 +62,25 @@ module.exports = function DonationController(app, db) {
       res.status(500).send('Internal Server Error');
     } finally {
       // Release connection if necessary
+    }
+  });
+
+  app.get('/donation/history', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Extract user ID from the authenticated token
+
+    try {
+      const connection = await db.promise();
+
+      // Fetch donation history of the authenticated user
+      const [donationHistory] = await connection.execute(
+        'SELECT * FROM blood_donations WHERE user_id = ?',
+        [userId]
+      );
+
+      res.status(200).json({ donationHistory });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
     }
   });
 };

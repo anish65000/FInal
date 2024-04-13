@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import UserNavbar from '../UserNavbar';
+import UserSidebar from './UserSidebar';
 
 const PremiumDonorList = () => {
   const [premiumDonors, setPremiumDonors] = useState([]);
@@ -40,49 +41,49 @@ const PremiumDonorList = () => {
   return (
     <>
       <UserNavbar/>
-      <div className="flex flex-col bg-white rounded-lg shadow-md p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-800">Premium Donor List</h2>
-        </div>
-        <div className="mt-4 bg-tahiti">
-          {premiumDonors.map((donor) => (
-            <div key={donor.premium_donor_id} className="donor-item  bg-green mb-6">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="donor-image-container">
-                  <img
-                    src={`http://localhost:5000${donor.profile_picture}`}
-                    alt={`${donor.userName} profile picture`}
-                    className="donor-image"
-                    style={{ width: '250px', height: '200px' }} // Fixed size styling
-                    onError={(e) => console.error('Error loading image:', e)}
-                  />
+      <div className="flex">
+        <UserSidebar />
+        <div className="flex flex-col bg-white rounded-lg shadow-md p-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">Premium Donor List</h2>
+          </div>
+          <div className="mt-4">
+            {premiumDonors.map((donor) => (
+              <div key={donor.premium_donor_id} className="donor-item bg-light-green mb-6 p-4 rounded-lg shadow-md">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="donor-image-container">
+                    <img
+                      src={`http://localhost:5000${donor.profile_picture}`}
+                      alt={`${donor.userName} profile`}
+                      className="donor-image"
+                      style={{ width: '250px', height: '200px', objectFit: 'cover' }}
+                      onError={(e) => console.error('Error loading image:', e)}
+                    />
+                  </div>
+                  <div className="donor-info col-span-2">
+                    <div className="text-gray font-bold">Name</div>
+                    <div>{donor.userName}</div>
+                    <div className="text-gray-700 font-bold">Blood Group</div>
+                    <div>{donor.userBloodGroup}</div>
+                    <div className="text-gray-700 font-bold">Availability</div>
+                    <div>{donor.availability_time}</div>
+                    <div className="text-gray-700 font-bold">Address</div>
+                    <div>{donor.userAddress}</div>
+                    <div className="text-gray-700 font-bold">Last Donation</div>
+                    <div>{donor.last_donation_date}</div>
+                  </div>
                 </div>
-                <div className="donor-info">
-                  <div className="text-gray font-bold">Name</div>
-                  <div>{donor.userName}</div>
-                  <div className="text-gray-700 font-bold">Blood Group</div>
-                  <div>{donor.userBloodGroup}</div>
-                  <div className="text-gray-700 font-bold">Availability</div>
-                  <div>{donor.availability_time}</div>
-                  <div className="text-gray-700 font-bold">Address</div>
-                  <div>{donor.userAddress}</div>
-                </div>
-                <div className="col-span-1">
-                  <div className="text-gray-700 font-bold">Phone Number</div>
-                  <div>{donor.userPhone}</div>
-                  <div className="text-gray-700 font-bold">Age</div>
-                  <div>{donor.userAge}</div>
-                  <div className="text-gray-700 font-bold">Previous Donation</div>
-                  <div>{donor.previous_dontaion}</div>
-                  <div className="text-gray-700 font-bold">Location</div>
-                  <div>Latitude: {donor.latitude}, Longitude: {donor.longitude}</div>
+                <div className="flex justify-between items-center mt-4">
+                  <Link to={`/donors/${donor.premium_donor_id}`}>
+                    <button className='bg-pastel-green hover:bg-custom-green text-white font-bold py-2 px-4 rounded' type="button">View Profile</button>
+                  </Link>
+                  <div>
+                    {/* Add any other textual information related to donors here */}
+                  </div>
                 </div>
               </div>
-              <Link to={`/donors/${donor.premium_donor_id}`}>
-                <button className='bg-red hover:bg-blue text-white font-bold py-2 px-4 rounded mt-4' type="button">View Profile</button>
-              </Link>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </>

@@ -12,7 +12,6 @@ const BloodBankRiderRegisterController = (app, db) => {
     }
   };
 
-  // Route to handle blood bank rider registration
   app.post("/reg/bloodbank-rider", upload.single('avatar'), async (req, res) => {
     try {
       const {
@@ -23,14 +22,15 @@ const BloodBankRiderRegisterController = (app, db) => {
         bikeModel,
         licenseNumber,
         username,
-        password
+        password,
+        gender,
+        age,
       } = req.body;
 
-      // Handle file upload if avatar is present in the request
       const avatar = req.file;
       let imagePath = '';
       if (avatar) {
-        imagePath = avatar.path;
+        imagePath = avatar.path.replace("public\\profile-pictures\\", "");
       }
 
       const existingRider = await query('SELECT * FROM bloodbank_riders WHERE name = ?', [username]);
@@ -44,8 +44,8 @@ const BloodBankRiderRegisterController = (app, db) => {
       const connection = await db.promise();
       try {
         const [riderDetailsResult] = await connection.query(
-          'INSERT INTO bloodbank_riders (name, email, phone_number, blood_type, bike_model, license_number, avatar) VALUES (?, ?, ?, ?, ?, ?, ?)',
-          [name, email, phoneNumber, bloodType, bikeModel, licenseNumber, imagePath]
+          'INSERT INTO bloodbank_riders (name, email, phone_number, blood_type, bike_model, license_number, avatar, gender, age) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [name, email, phoneNumber, bloodType, bikeModel, licenseNumber, imagePath, gender, age]
         );
 
         const riderId = riderDetailsResult.insertId;
@@ -69,28 +69,31 @@ const BloodBankRiderRegisterController = (app, db) => {
     }
   });
 
-  app.get('/ride-request/:rideId', async (req, res) => {
-    const rideId = req.params.rideId; // Extract the ride ID from the request URL
+  
+app.get('/ride-request/:rideId', async (req, res) => {
+  const rideId = req.params.rideId; // Extract the ride ID from the request URL
 
-    try {
-        // Fetch ride request details from the database based on the ride ID
-        const [rideRequest] = await db.promise().query(`
-            SELECT * FROM ride_requests WHERE ride_id = ?
-        `, [rideId]);
+  try {
+      // Fetch ride request details from the database based on the ride ID
+      const [rideRequest] = await db.promise().query(`
+          SELECT * FROM ride_requests WHERE ride_id = ?
+      `, [rideId]);
 
-        // Check if ride request details were found
-        if (rideRequest.length === 0) {
-            return res.status(404).json({ success: false, message: 'Ride request not found' });
-        }
+      // Check if ride request details were found
+      if (rideRequest.length === 0) {
+          return res.status(404).json({ success: false, message: 'Ride request not found' });
+      }
 
-        // Respond with ride request details
-        res.status(200).json({ success: true, rideRequest: rideRequest[0] });
-    } catch (error) {
-        // If any error occurs during the process, respond with an error message
-        console.error('Error:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
-    }
+      // Respond with ride request details
+      res.status(200).json({ success: true, rideRequest: rideRequest[0] });
+  } catch (error) {
+      // If any error occurs during the process, respond with an error message
+      console.error('Error:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
 });
+
+
 }
 
 module.exports = BloodBankRiderRegisterController;

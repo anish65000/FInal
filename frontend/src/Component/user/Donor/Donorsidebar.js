@@ -1,8 +1,8 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaMoneyBillWave } from "react-icons/fa";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faLifeRing } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faBars, faLifeRing } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../Usercontext";
 import { Home, Person2, Logout, Inventory, SupervisorAccount } from "@mui/icons-material";
 
@@ -66,9 +66,9 @@ const DonorSidebar = () => {
           </li>
           <li className="opcion-con-desplegable">
             <div className="flex items-center justify-between p-2 hover:bg-custom-green">
-              <Link to="/Seller/SellerProfile" className="flex items-center text-gray">
+              <Link to="/DonationHistory" className="flex items-center text-gray">
                 <Person2 className="mr-2" />
-                <span>Profile</span>
+                <span>Blood Request History</span>
               </Link>
             </div>
           </li>

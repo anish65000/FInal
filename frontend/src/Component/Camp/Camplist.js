@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import StaffSidebar from '../Staff/StaffSidebar';
+import StaffNavbar from '../Staff/StaffNavbar';
 
 const CampsList = () => {
   const [camps, setCamps] = useState([]);
@@ -62,157 +64,170 @@ const CampsList = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">
-      <ToastContainer />
-      <h1 className="text-3xl font-bold text-center text-indigo-700 mb-8">
-        Discover Amazing Camps
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {camps.map((camp) => (
-          <div
-            key={camp.campId}
-            className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105"
-          >
-            {editCamp && editCamp.campId === camp.campId ? (
-              <div className="p-6 bg-green-100">
-                <h2 className="text-2xl font-bold text-center text-indigo-700 mb-4">
-                  Edit Camp
-                </h2>
-                <div className="text-center text-gray-700">
-                  <input
-                    type="text"
-                    value={editCamp.name}
-                    onChange={(e) =>
-                      setEditCamp({ ...editCamp, name: e.target.value })
-                    }
-                    className="mb-2 border border-gray-400 rounded-md px-2 py-1 w-full"
-                    placeholder="Camp Name"
-                  />
-                  <input
-                    type="text"
-                    value={editCamp.date}
-                    onChange={(e) =>
-                      setEditCamp({ ...editCamp, date: e.target.value })
-                    }
-                    className="mb-2 border border-gray-400 rounded-md px-2 py-1 w-full"
-                    placeholder="Date"
-                  />
-                  <input
-                    type="text"
-                    value={editCamp.address}
-                    onChange={(e) =>
-                      setEditCamp({ ...editCamp, address: e.target.value })
-                    }
-                    className="mb-2 border border-gray-400 rounded-md px-2 py-1 w-full"
-                    placeholder="Address"
-                  />
-                  <input
-                    type="text"
-                    value={editCamp.district}
-                    onChange={(e) =>
-                      setEditCamp({ ...editCamp, district: e.target.value })
-                    }
-                    className="mb-2 border border-gray-400 rounded-md px-2 py-1 w-full"
-                    placeholder="District"
-                  />
-                  <input
-                    type="text"
-                    value={editCamp.organizer}
-                    onChange={(e) =>
-                      setEditCamp({ ...editCamp, organizer: e.target.value })
-                    }
-                    className="mb-2 border border-gray-400 rounded-md px-2 py-1 w-full"
-                    placeholder="Organizer"
-                  />
-                  <input
-                    type="text"
-                    value={editCamp.contact}
-                    onChange={(e) =>
-                      setEditCamp({ ...editCamp, contact: e.target.value })
-                    }
-                    className="mb-2 border border-gray-400 rounded-md px-2 py-1 w-full"
-                    placeholder="Contact"
-                  />
-                  <input
-                    type="text"
-                    value={editCamp.startTime}
-                    onChange={(e) =>
-                      setEditCamp({ ...editCamp, startTime: e.target.value })
-                    }
-                    className="mb-2 border border-gray-400 rounded-md px-2 py-1 w-full"
-                    placeholder="Start Time"
-                  />
-                  <input
-                    type="text"
-                    value={editCamp.endTime}
-                    onChange={(e) =>
-                      setEditCamp({ ...editCamp, endTime: e.target.value })
-                    }
-                    className="mb-2 border border-gray-400 rounded-md px-2 py-1 w-full"
-                    placeholder="End Time"
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="p-6">
-                <h2 className="text-2xl font-bold text-center text-indigo-700 mb-4">
-                  Camp Name : {camp.name}
-                </h2>
-                <div className="text-center text-gray-700">
-                  <p className="mb-2">Date :{camp.date}</p>
-                  <p className="mb-2">Time: {camp.address}</p>
-                  <p className="mb-2">Distrct: {camp.district}</p>
-                  <p className="mb-2">Organizer:{camp.organizer}</p>
-                  <p className="mb-2">Conatct :{camp.contact}</p>
-                  <p className="mb-2 font-semibold">
-                    Start Time: {camp.startTime} <br /> End Time: {camp.endTime}
-                  </p>
-                </div>
-              </div>
-            )}
-            <div className="bg-green-500 text-white px-6 py-4 text-center flex justify-between">
-              {editCamp && editCamp.campId === camp.campId ? (
-                <>
-                  <button
-                    className="font-bold mr-2 bg-green-hover:bg-green-800 px-4 py-2 rounded"
-                    onClick={() => handleUpdateCamp(editCamp)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="font-bold bg-red hover:bg-red-600 px-4 py-2 rounded"
-                    onClick={handleCancelEdit}
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center">
-                    <button
-                      className="font-bold mr-2 bg-green hover:bg-green-800 px-4 py-2 rounded"
-                      onClick={() => handleRegisterClick(camp.campId)}
-                    >
-                      Register Donor
-                    </button>
-                    <button
-                      className="font-bold bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
-                      onClick={() => handleEditClick(camp)}
-                    >
-                      Edit
-                    </button>
-                  </div>
-                  <button
-                    className="font-bold bg-red hover:bg-red-600 px-4 py-2 rounded"
-                    onClick={() => handleDeleteCamp(camp.campId)}
-                  >
-                    Delete
-                  </button>
-                </>
-              )}
-            </div>
+    <div className="flex h-screen">
+      <StaffSidebar />
+      <div className="flex-grow bg-pro-white">
+        <StaffNavbar />
+        <div className="container mx-auto p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl align-center font-bold text-center text-red">Discover Amazing Camps</h1>
+            <button
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+              onClick={() => handleRegisterClick('newCampId')}
+            >
+              Add New Camp
+            </button>
           </div>
-        ))}
+          <ToastContainer />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {camps.map((camp) => (
+              <div
+                key={camp.campId}
+                className="bg-green rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105"
+              >
+                {editCamp && editCamp.campId === camp.campId ? (
+                  <div className="p-6 bg-green-100">
+                    <h2 className="text-2xl font-bold text-indigo-700 mb-4">Edit Camp</h2>
+                    <input
+                      type="text"
+                      value={editCamp.name}
+                      onChange={(e) => setEditCamp({ ...editCamp, name: e.target.value })}
+                      className="mb-4 border border-gray-400 rounded-md px-2 py-1 w-full"
+                      placeholder="Camp Name"
+                    />
+                    <input
+                      type="text"
+                      value={editCamp.date}
+                      onChange={(e) => setEditCamp({ ...editCamp, date: e.target.value })}
+                      className="mb-4 border border-gray-400 rounded-md px-2 py-1 w-full"
+                      placeholder="Date"
+                    />
+                    <input
+                      type="text"
+                      value={editCamp.address}
+                      onChange={(e) => setEditCamp({ ...editCamp, address: e.target.value })}
+                      className="mb-4 border border-gray-400 rounded-md px-2 py-1 w-full"
+                      placeholder="Address"
+                    />
+                    <input
+                      type="text"
+                      value={editCamp.district}
+                      onChange={(e) => setEditCamp({ ...editCamp, district: e.target.value })}
+                      className="mb-4 border border-gray-400 rounded-md px-2 py-1 w-full"
+                      placeholder="District"
+                    />
+                    <input
+                      type="text"
+                      value={editCamp.organizer}
+                      onChange={(e) => setEditCamp({ ...editCamp, organizer: e.target.value })}
+                      className="mb-4 border border-gray-400 rounded-md px-2 py-1 w-full"
+                      placeholder="Organizer"
+                    />
+                    <input
+                      type="text"
+                      value={editCamp.contact}
+                      onChange={(e) => setEditCamp({ ...editCamp, contact: e.target.value })}
+                      className="mb-4 border border-gray-400 rounded-md px-2 py-1 w-full"
+                      placeholder="Contact"
+                    />
+                    <input
+                      type="text"
+                      value={editCamp.startTime}
+                      onChange={(e) => setEditCamp({ ...editCamp, startTime: e.target.value })}
+                      className="mb-4 border border-gray-400 rounded-md px-2 py-1 w-full"
+                      placeholder="Start Time"
+                    />
+                    <input
+                      type="text"
+                      value={editCamp.endTime}
+                      onChange={(e) => setEditCamp({ ...editCamp, endTime: e.target.value })}
+                      className="mb-4 border border-gray-400 rounded-md px-2 py-1 w-full"
+                      placeholder="End Time"
+                    />
+                    <div className="flex justify-end">
+                      <button
+                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-2"
+                        onClick={() => handleUpdateCamp(editCamp)}
+                      >
+                        Update
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleCancelEdit}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-6">
+                    <h2 className="text-2xl font-bold text-indigo-700 mb-2">Camp Name: {camp.name}</h2>
+                    <div className="mb-2">
+                      <span className="font-bold">Date:</span> {camp.date}
+                    </div>
+                    <div className="mb-2">
+                      <span className="font-bold">Address:</span> {camp.address}
+                    </div>
+                    <div className="mb-2">
+                      <span className="font-bold">District:</span> {camp.district}
+                    </div>
+                    <div className="mb-2">
+                      <span className="font-bold">Organizer:</span> {camp.organizer}
+                    </div>
+                    <div className="mb-2">
+                      <span className="font-bold">Contact:</span> {camp.contact}
+                    </div>
+                    <div className="mb-2 font-semibold">
+                      <span className="font-bold">Start Time:</span> {camp.startTime} <br />
+                      <span className="font-bold">End Time:</span> {camp.endTime}
+                    </div>
+                  </div>
+                )}
+                <div className="bg-green-500 text-white px-6 py-4 text-center flex justify-between">
+                  {editCamp && editCamp.campId === camp.campId ? (
+                    <>
+                      <button
+                        className="bg-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => handleUpdateCamp(editCamp)}
+                      >
+                        Update
+                      </button>
+                      <button
+                        className="bg-red hover:bg-yellow text-white font-bold py-2 px-4 rounded"
+                        onClick={handleCancelEdit}
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-center">
+                        <button
+                          className="bg-yellowX hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-2"
+                          onClick={() => handleRegisterClick(camp.campId)}
+                        >
+                          Register Donor
+                        </button>
+                        <button
+                          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                          onClick={() => handleEditClick(camp)}
+                        >
+                          Edit
+                        </button>
+                      </div>
+                      <button
+                        className="bg-red hover:bg-yellow text-white font-bold py-2 px-4 rounded"
+                        onClick={() => handleDeleteCamp(camp.campId)}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

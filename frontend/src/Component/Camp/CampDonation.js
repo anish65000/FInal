@@ -3,6 +3,8 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
+import StaffSidebar from '../Staff/StaffSidebar';
+import StaffNavbar from '../Staff/StaffNavbar';
 
 const CampForm = () => {
   const { campId } = useParams();
@@ -71,7 +73,17 @@ const CampForm = () => {
   };
 
   return (
-    <div className="container mx-auto mt-8">
+    <div className="">
+         <ToastContainer />
+    <div className="home bg-pro-white flex flex-col flex-grow ">
+   <StaffSidebar />
+   <div className="flex flex-col flex-grow">
+     <StaffNavbar />
+     <div className="container mx-auto p-4">
+       <div className="flex items-center justify-between mb-4"></div>
+   
+       <h1 className="text-4xl font-bold mt-5 mb-8 text-center text-red-600">Camp Blood Donations</h1>
+   </div>
       {camp ? (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto p-8 rounded-md shadow-md bg-bermuda">
           <h2 className="text-2xl font-semibold mb-6">Blood Donation Form</h2>
@@ -185,7 +197,7 @@ const CampForm = () => {
       )}
 
       <ToastContainer />
-    </div>
+    </div> </div> </div>
   );
 };
 

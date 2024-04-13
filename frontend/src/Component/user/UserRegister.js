@@ -266,7 +266,7 @@ const UserRegister = () => {
             </div>
             <div className="flex justify-between my-4">
             <a href="/user/login" className="text-sm text-blue-600 hover:underline">
-              login her
+              login here
             </a>
           </div>
           </form>

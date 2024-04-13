@@ -73,6 +73,14 @@ import BloodRequestList from './Component/user/Recipients/Requesthistory';
 import RequestedRides from './Component/Rider/RequestedRides';
 import RequestedRidesMap from  './Component/Rider/DonorLocation';
 import BookBloodAppointmentForm from './Component/user/Donor/BookAppointmentForm';
+import DonationHistory from './Component/user/Donor/DonationHistory';
+import StaffProfile from './Component/Staff/StaffProfile';
+import RecipientsComponent from './Component/Staff/RecipientsInventory'
+import AddRecipient from './Component/Staff/AddRecipents'
+import ManageUsers from './Component/Admin/Mangeuser';
+import ManageStaff from './Component/Admin/ManageStaff';
+import RiderManagement from './Component/Admin/Managerider';
+import BloodInventoryDashboard from './Component/Admin/BloodStockDashboard';
 function App() {
   return (
     <BrowserRouter>
@@ -91,6 +99,7 @@ function App() {
             <Route path="/rider/login" element={<RiderLogin />} />
             <Route path="/register/prem" element={<PremiumDonorRegistration />} />
             <Route path="/profile" element={<ViewProfile />} />
+            <Route path="/stfprofile" element={<StaffProfile />} />
             <Route path="/viewprofile" element={<PremiumDonorProfile />} />
             <Route path="/user/login" element={<UserLoginPage />} />
             <Route path="/Navbar" element={<UserNavbar />} />
@@ -137,6 +146,19 @@ function App() {
             <Route path="/edit-bloodbank/:id" element={<EditBloodBank />} />
             <Route path="/Riderequest/:requestId" element={<RideRequestForm />} /> 
             <Route path="/bloodrequest" element={<BloodRequestList/>} /> 
+            <Route path="/managedonation" element={<ManageDonations/>} /> 
+            <Route path="/DonationHistory" element={< DonationHistory />} /> 
+            <Route path="/RecipientsComponent" element={<  RecipientsComponent />} /> 
+            <Route path="/AddRecipients" element={<  AddRecipient />} /> 
+            <Route path="/ManageUsers" element={<  ManageUsers />} />
+            <Route path="/ManageStaffs" element={<  ManageStaff />} />
+            <Route path="/ManageRiders" element={<  RiderManagement />} />
+
+            <Route path="/BloodInventoryDashboard" element={<   BloodInventoryDashboard />} />
+
+            
+           
+             
           </Routes>
         </StaffProvider>
         </RiderProvider>

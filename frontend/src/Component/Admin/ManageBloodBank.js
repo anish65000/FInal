@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import StaffSidebar from '../Staff/StaffSidebar';
+import StaffNavbar from '../Staff/StaffNavbar';
 
 const ManageBloodBanks = () => {
   const [bloodBanks, setBloodBanks] = useState([]);
@@ -68,8 +70,18 @@ const ManageBloodBanks = () => {
 
 
   return (
-    <div className="container mx-auto p-4 text-lg">
-      <h1 className="text-4xl font-bold mb-4">Manage Blood Banks</h1>
+    
+       <div className="home bg-pro-white flex flex-col flex-grow ">
+      <StaffSidebar />
+      <div className="flex flex-col flex-grow">
+        <StaffNavbar />
+        <div className="container mx-auto p-4">
+          <div className="flex items-center justify-between mb-4"></div>
+      <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+      Manage Blood Banks
+      </h2>
+      </div>
+      
       <ToastContainer />
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg table-auto">
@@ -175,6 +187,8 @@ const ManageBloodBanks = () => {
         </table>
       </div>
     </div>
+    </div>
+    
   );
 }
 

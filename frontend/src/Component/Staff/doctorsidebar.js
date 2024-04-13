@@ -8,6 +8,8 @@ import {
   FaMoneyBillWave,
   FaChartBar,
   FaFileAlt,
+  FaSortAlphaUp,
+  FaHeart,
 } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -45,12 +47,12 @@ const DoctorSidebar = () => {
       <div className={`offcanvas offcanvas-start ${sidebarOpen ? "show" : ""}`}>
         <div className="offcanvas-header bg-white">
           <h5 className="text-2xl pl-24 text-14 font-normal  text-custom-green hover:text-custom-green " target="_blank">Nexus Blood care</h5>
-          <button  type="button" className="btn-close bg-red" onClick={toggleSidebar}>
+          <button  type="button" className="btn-close bg-nav-gray" onClick={toggleSidebar}>
             
           </button>
         </div>
         <div className="offcanvas-body bg-nav-gray">
-          <aside className="bg-red text-white min-h-screen p-4">
+          <aside className="bg-pastel-green text-white min-h-screen p-4">
             <nav>
               <ul className="space-y-2">
                 <li className="opcion-con-desplegable">
@@ -61,24 +63,26 @@ const DoctorSidebar = () => {
                     </Link>
                   </div>
                 </li>
-                {/* Other menu items */}
                 <li className="opcion-con-desplegable">
                   <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(1)}>
                     <Link to="/confirmed" className="flex items-center text-gray">
-                      <FaChevronDown className="mr-2" />
+                      <FaHeart className="mr-2" />
                       <span>Confirmed Appointment</span>
                     </Link>
                   </div>
                 </li>
 
-                <div className="flex items-center justify-between p-2 hover:bg-custom-green text-gray" onClick={() => toggleSubMenu(2)}>
+                {/* Other menu items */}
+              
+
+                <div className="flex items-center justify-between p-2 hover:bg-custom-green text-gray" onClick={() => toggleSubMenu(3)}>
                     <Link to="/Addslots" className="flex items-center text-gray">
                       <Inventory className="mr-2 text-gray" />
                       <span>Add Slots</span>
                     </Link>
                   </div>
                 <li className="opcion-con-desplegable">
-                  <div className="flex items-center justify-between p-2 hover:bg-custom-green text-gray" onClick={() => toggleSubMenu(2)}>
+                  <div className="flex items-center justify-between p-2 hover:bg-custom-green text-gray" onClick={() => toggleSubMenu(4)}>
                     <Link to="/Appointmentslist" className="flex items-cente text-gray">
                       <Inventory className="mr-2 text-gray" />
                       <span>Appointment List</span>
@@ -100,17 +104,7 @@ const DoctorSidebar = () => {
                     </Link>
                   </div>
                 </li>
-                <li className="opcion-con-desplegable text-gray">
-                  <div
-                    className="flex items-center justify-between p-2 hover:bg-custom-green"
-                    onClick={() => toggleSubMenu(4)}
-                  >
-                    <Link to="/staff/view-camp" className="flex items-center text-gray">
-                      <FaChartBar className="mr-2"  />
-                      <span>View Appointment list</span>
-                    </Link>
-                  </div>
-                </li>
+                
                 <li className="opcion-con-desplegable">
                   <div
                     className="flex items-center justify-between p-2 hover:bg-custom-green"

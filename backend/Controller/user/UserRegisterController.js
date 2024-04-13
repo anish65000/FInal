@@ -40,10 +40,15 @@ const UserRegisterController = (app, connection) => {
       }
 
       // Check if user username already exists
-      const existingUser = await query(connection, 'SELECT * FROM user_login WHERE userName = ?', [userUserName]);
+      const existingUsername = await query(connection, 'SELECT * FROM user_login WHERE userName = ?', [userUserName]);
+      if (existingUsername.length > 0) {
+        return res.status(400).send({ message: 'Username already exists' });
+      }
 
-      if (existingUser.length > 0) {
-        return res.status(400).send({ message: 'User username already exists' });
+      // Check if user email already exists
+      const existingEmail = await query(connection, 'SELECT * FROM user_details WHERE userEmail = ?', [userEmail]);
+      if (existingEmail.length > 0) {
+        return res.status(400).send({ message: 'Email already exists' });
       }
 
       // Hash the user password
@@ -77,6 +82,25 @@ const UserRegisterController = (app, connection) => {
             'INSERT INTO user_login (user_id, userName, userpassword) VALUES (?, ?, ?)',
             [userId, userUserName, hashedPassword]
           );
+
+          // If userRole is 'donor', insert donor inventory data
+if (userRole === 'Donor') {
+  await query(
+    connection,
+    'INSERT INTO donor_inventory(blood_group, age, email, address, donor_name, phone, gender) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [userBloodGroup, userAge, userEmail, userAddress, userName, userPhone, userGender]
+  );
+}
+
+// If userRole is 'recipient', insert recipient inventory data
+if (userRole === 'Recipient') {
+  await query(
+    connection,
+    'INSERT INTO recipient_inventory(recipient_name, blood_group, email, age, address, phone) VALUES (?, ?, ?, ?, ?, ?)',
+    [userName, userBloodGroup, userEmail, userAge, userAddress, userPhone]
+  );
+}
+
 
           // Commit the transaction
           connection.commit((commitErr) => {

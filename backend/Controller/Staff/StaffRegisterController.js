@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const express = require('express');
 const upload = require('./multerConfig'); // Import Multer configuration
 
 const StaffRegisterController = (app, db) => {
@@ -29,7 +28,7 @@ const StaffRegisterController = (app, db) => {
       const avatar = req.file;
       let imagePath = '';
       if (avatar) {
-        imagePath = avatar.path;
+        imagePath = avatar.path.replace("public\\profile-pictures\\", ""); // Remove the prefix
       }
 
       const existingStaff = await query('SELECT * FROM stf_login WHERE userName = ?', [stfUserName]);
@@ -64,6 +63,51 @@ const StaffRegisterController = (app, db) => {
       } 
     } catch (error) {
       console.error("Error during staff registration:", error);
+      res.status(500).send({ success: false, error: "Internal Server Error" });
+    }
+  });
+
+  // Route to handle editing staff details
+  app.put("/edit/stf/:id", upload.single('avatar'), async (req, res) => {
+    try {
+      const { id } = req.params;
+      const {
+        stfName,
+        stfEmail,
+        stfPhone,
+        stfAddress,
+      } = req.body;
+  
+      // Handle file upload if avatar is present in the request
+      const avatar = req.file;
+      let imagePath = '';
+      if (avatar) {
+        imagePath = avatar.path.replace("public\\profile-pictures\\", ""); // Remove the prefix
+      }
+  
+      const existingStaff = await query('SELECT * FROM stf_details WHERE id = ?', [id]);
+  
+      if (existingStaff.length === 0) {
+        return res.status(404).send({ message: "Staff not found" });
+      }
+  
+      const connection = await db.promise();
+      try {
+        await connection.query(
+          'UPDATE stf_details SET stfName = ?, stfMail = ?, stfPhone = ?, stfAddress = ?, avatar = ? WHERE id = ?',
+          [stfName, stfEmail, stfPhone, stfAddress, imagePath, id]
+        );
+  
+        await connection.commit();
+  
+        console.log("Staff Details Updated Successfully");
+        res.status(200).send({ success: true, message: "STAFF DETAILS UPDATED SUCCESSFULLY!" });
+      } catch (err) {
+        await connection.rollback();
+        throw err;
+      } 
+    } catch (error) {
+      console.error("Error during staff details update:", error);
       res.status(500).send({ success: false, error: "Internal Server Error" });
     }
   });

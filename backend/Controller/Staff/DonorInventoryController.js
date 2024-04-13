@@ -19,11 +19,11 @@ const DonorInventoryController = (app, db) => {
   
   app.put("/login/stf/ds/update", async (req, res) => {
       try {
-          const { donor_id, age, address, blood_group, unitUpdate, donor_name, donation_time } = req.body;
-          const sqlUpdate = "UPDATE donor_inventory SET donor_name=?, blood_group=?, unit=?, age=?, address=?, donation_time=? WHERE id = ?;";
+          const { donor_id, age, address, blood_group, email, donor_name,gender, phone } = req.body;
+          const sqlUpdate = "UPDATE donor_inventory SET donor_name=?, blood_group=?, email=?, age=?, address=?, gender=? , phone=? WHERE id = ?;";
           
           // Execute the update statement
-          const updateResult = await queryAsync(sqlUpdate, [donor_name, blood_group, unitUpdate, age, address, donation_time, donor_id]);
+          const updateResult = await queryAsync(sqlUpdate, [donor_name, blood_group, email, age, address, phone,gender, donor_id]);
   
           // Check if the update was successful
           if (updateResult.affectedRows > 0) {
@@ -46,22 +46,22 @@ const DonorInventoryController = (app, db) => {
   // Insert new donor stocks
   app.post("/login/stf/ds/insert", (req, res) => {
     try {
-      const { blood_group, unit, age, address, donor_name, donation_time } = req.body;
-
-      if (!blood_group || !unit || !age || !address || !donor_name || !donation_time) {
+      const { blood_group, age, email,address, donor_name, phone, gender } = req.body;
+  
+      if (!blood_group || !email || !age || !address || !donor_name || !phone || !gender) {
         return res.status(400).send({ message: "All fields are required." });
       }
-
-      const sqlInsert = "INSERT INTO donor_inventory (blood_group, unit, age, address, donor_name, donation_time) VALUES (?, ?, ?, ?, ?, ?);";
-
-      db.query(sqlInsert, [blood_group, unit, age, address, donor_name, donation_time], (err, result) => {
+  
+      const sqlInsert = "INSERT INTO donor_inventory (blood_group, age,email, address, donor_name, phone, gender) VALUES (?, ?, ?, ?, ?, ?, ?);";
+  
+      db.query(sqlInsert, [blood_group, age,email,  address, donor_name, phone, gender], (err, result) => {
         if (err) {
           console.error('Error in inserting blood stock:', err);
           res.status(500).send("Internal Server Error");
         } else {
           const donorId = result.insertId;
           console.log('Blood stock inserted successfully with ID:', donorId);
-
+  
           // Include the donor ID and success message in the response
           res.json({ message: 'Blood stock inserted successfully', donorId });
         }
@@ -71,7 +71,7 @@ const DonorInventoryController = (app, db) => {
       res.status(400).send({ message: "ERROR IN BLOOD STOCK INSERTION!" });
     }
   });
-
+  
 
   
   // Delete donor stocks

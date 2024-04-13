@@ -33,6 +33,12 @@ const RiderLoginController = require('../Controller/Rider/login')
 const BloodBankAllRidersController = require('../Controller/Rider/Riderdetails')
 const RiderRideController = require('../Controller/Rider/Request')
 const startRideController = require('../Controller/Rider/StartRideController')
+const StaffProfilerController= require('../Controller/Staff/StaffProfile')
+const ManageStaffController = require('../Controller/Admin/Managestaff')
+
+const RecipientInventoryController = require('../Controller/Staff/RecipientsManagemnt')
+const ManageUserController = require('../Controller/Admin/Manageuser')
+const ManageRiderController = require('../Controller/Admin/ManageRider')
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -80,6 +86,7 @@ DonorInventoryController(app, db);
 BloodRequestController(app, db, authenticateToken);
 DonationController(app, db, authenticateToken);
 ManageDonationcontroller(app, db, authenticateToken);
+ManageUserController(app, db, authenticateToken);
 userLoginController(app, db);
 BloodbankController(app, db);
 campController(app, db);
@@ -96,8 +103,12 @@ app.use('/', userLoginController(db));
 app.use('/', RiderLoginController (db))
 
 BloodBankAllRidersController(app,db);
+StaffProfilerController(app, db, authenticateToken);
 RiderRideController(app, db, authenticateToken);
-startRideController(app, db, authenticateToken);;
+startRideController(app, db, authenticateToken);
+ManageStaffController(app, db, authenticateToken);
+RecipientInventoryController(app,db);
+ManageRiderController(app, db, authenticateToken);
 
 DonorNotification(app, db, wss); // Pass wss to DonorNotification
 

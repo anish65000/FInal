@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import UserNavbar from "./UserNavbar";
+import DonorSidebar from "./Donor/Donorsidebar";
 
 const PremiumDonorProfile = () => {
   const [premiumDonor, setPremiumDonor] = useState(null);
@@ -42,127 +44,128 @@ const PremiumDonorProfile = () => {
   }
 
   return (
-    <div>
-      <div className="container mx-auto">
-        <div className="main-body">
-          <div className="flex flex-row flex-wrap justify-center">
-            {/* Left column for profile */}
-            <div className="w-full md:w-1/4 pt-4">
-             
-            </div>
-            {/* Right column for profile details */}
-            <div className="right w-full md:w-2/3 pl-20 mt-4 flex flex-col justify-start bg-white-gray rounded-md">
-              <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
-                <div className="max-w-lg">
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-lg font-bold mb-2 text-custom-green">
-                      Donor Profile
-                    </h4>
+    <>
+      <UserNavbar />
+      <div className="flex">
+        <DonorSidebar />
+        <div className="container mx-auto">
+          <div className="main-body">
+            <div className="flex flex-row flex-wrap justify-center">
+              {/* Left column for profile */}
+              <div className="w-full md:w-1/4 pt-4"></div>
+              {/* Right column for profile details */}
+              <div className="right w-full md:w-2/3 pl-20 mt-4 flex flex-col justify-start bg-white-gray rounded-md">
+                <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
+                  <div className="max-w-lg">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-lg font-bold mb-2 text-custom-green">
+                        Donor Profile
+                      </h4>
+                    </div>
+                    <hr className="my-2 border-gray-600" />
+                    <div className="mt-4 space-y-4">
+                      <div className="mb-4">
+                        <label
+                          htmlFor="firstName"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          value={`${premiumDonor.userName} (${premiumDonor.userAge})`}
+                          className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
+                          disabled
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor="gender"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Gender
+                        </label>
+                        <input
+                          type="text"
+                          value={premiumDonor.userGender}
+                          className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
+                          disabled
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor="bloodGroup"
+                          className="block text-sm font-medium text-gray"
+                        >
+                          Blood Group
+                        </label>
+                        <input
+                          type="text"
+                          value={premiumDonor.userBloodGroup}
+                          className="mt-1 p-2 w-full border-gray rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
+                          disabled
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor="phone"
+                          className="block text-sm font-medium text-gray"
+                        >
+                          Phone
+                        </label>
+                        <input
+                          type="text"
+                          value={premiumDonor.userPhone}
+                          className="mt-1 p-2 w-full border-gray rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
+                          disabled
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor="email"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          value={premiumDonor.userEmail}
+                          className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
+                          disabled
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor="address"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Address
+                        </label>
+                        <textarea
+                          value={premiumDonor.userAddress}
+                          className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
+                          rows="3"
+                          disabled
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <hr className="my-2 border-gray-600" />
-                  <div className="mt-4 space-y-4">
-                    <div className="mb-4">
-                      <label
-                        htmlFor="firstName"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        value={`${premiumDonor.userName} (${premiumDonor.userAge})`}
-                        className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
-                        disabled
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="gender"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Gender
-                      </label>
-                      <input
-                        type="text"
-                        value={premiumDonor.userGender}
-                        className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
-                        disabled
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="bloodGroup"
-                        className="block text-sm font-medium text-gray"
-                      >
-                        Blood Group
-                      </label>
-                      <input
-                        type="text"
-                        value={premiumDonor.userBloodGroup}
-                        className="mt-1 p-2 w-full border-gray rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
-                        disabled
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="phone"
-                        className="block text-sm font-medium text-gray"
-                      >
-                        Phone
-                      </label>
-                      <input
-                        type="text"
-                        value={premiumDonor.userPhone}
-                        className="mt-1 p-2 w-full border-gray rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
-                        disabled
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        value={premiumDonor.userEmail}
-                        className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
-                        disabled
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="address"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Address
-                      </label>
-                      <textarea
-                        value={premiumDonor.userAddress}
-                        className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
-                        rows="3"
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                <div className="mt-12 md:mt-0">
-                <div className="mb-4">
-                  <img
-                    src={`http://localhost:5000${premiumDonor.profile_picture}`}
-                    alt="Profile"
-                  />
-
-<label
+                  <div className="mt-12 md:mt-0">
+                    <div className="mb-4">
+                      <img
+                        src={`http://localhost:5000${premiumDonor.profile_picture}`}
+                        alt="Profile"
+                        className="w-40 h-auto"
+                      />
+                      <label
                         htmlFor=""
                         className="block text-sm font-medium text-gray"
                       >
-                    {premiumDonor.userName}
+                        {premiumDonor.userName}
                       </label>
-                  </div>
-                  <div className="mb-4">
+                    </div>
+                    <div className="mb-4">
                       <label
                         htmlFor="donor_type"
                         className="block text-sm font-medium text-gray-700"
@@ -173,7 +176,6 @@ const PremiumDonorProfile = () => {
                         value={premiumDonor.donor_type}
                         className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
                         rows="3"
-                        
                       />
                     </div>
                     <div className="mb-4">
@@ -204,14 +206,14 @@ const PremiumDonorProfile = () => {
                         disabled
                       />
                     </div>
-
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

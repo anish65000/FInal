@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Navbar from './StaffNavbar';
+import StaffSidebar from './StaffSidebar';
 
 const BloodStockForm = () => {
   // Use consistent naming for clarity
@@ -38,6 +40,9 @@ const BloodStockForm = () => {
     }
   };
  return (
+  <>
+      <Navbar /> {/* Render Navbar */}
+      <StaffSidebar /> {/* Render StaffNavbar */}
     <div className="container mx-auto grid grid-cols-2 gap-4 bg-gray shadow-md rounded-md p-8">
       <h1 className="text-4xl font-bold mt-5 mb-8 text-center text-red-500">Blood Stock Form</h1>
       <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-gray-200 rounded-md">
@@ -106,6 +111,7 @@ const BloodStockForm = () => {
           </button>
         </form>
       </div>
+      </>
     
   );
 };

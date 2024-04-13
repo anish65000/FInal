@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import StaffSidebar from '../Staff/StaffSidebar';
+import StaffNavbar from '../Staff/StaffNavbar';
 
 const RegisterCamp = () => {
   const [formData, setFormData] = useState({
@@ -54,10 +56,17 @@ const RegisterCamp = () => {
 
   return (
     <div>
-      <ToastContainer />
-      <div className="flex justify-between items-center px-4 py-2">
-        <h3 className="text-2xl font-bold text-custom-green">Register Camp</h3>
-      </div>
+    <ToastContainer />
+    <div className="home bg-pro-white flex flex-col flex-grow ">
+   <StaffSidebar />
+   <div className="flex flex-col flex-grow">
+     <StaffNavbar />
+     <div className="container mx-auto p-4">
+       <div className="flex items-center justify-between mb-4"></div>
+   <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+   Register Camp
+   </h2>
+   </div>
       <hr className="border-t border-gray-500 mx-4" />
 
       <form onSubmit={handleSubmit} className="space-y-4 w-full p-10">
@@ -210,6 +219,7 @@ const RegisterCamp = () => {
           {isLoading ? 'Submitting...' : 'Submit'}
         </button>
       </form>
+    </div> </div>
     </div>
   );
 };

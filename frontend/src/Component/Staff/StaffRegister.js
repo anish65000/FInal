@@ -185,7 +185,6 @@ function StaffRegistration() {
     <option value="">Select</option>
     <option value="Staff">Staff</option>
     <option value="Doctor">Doctor</option>
-    <option value="Rider">Rider</option>
     <option value="Admin">Admin</option>
   </select>
 </div>

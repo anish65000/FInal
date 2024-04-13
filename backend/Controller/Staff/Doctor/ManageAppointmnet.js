@@ -121,28 +121,38 @@ module.exports = function ManageAppointmentController(app, db) {
     app.post('/blooddonated', authenticateToken, async (req, res) => {
         try {
             const { userId, slot_time, blood_group, unit } = req.body;
-
+    
             // Ensure req.user is defined after authentication middleware
             if (!req.user || !req.user.userId) {
                 console.log("STF ID missing in token:", req.user); // Log req.user for debugging
                 return res.status(401).json({ message: "Unauthorized: Missing STF ID in token" });
             }
-
+    
             const stf_id = req.user.userId;
-
+    
             // Query the database to get the staff type of the user
             const [staffTypeRows] = await db.promise().query(
                 'SELECT stfStaffType FROM stf_details WHERE id = ?',
                 [stf_id]
             );
-
+    
             if (staffTypeRows.length === 0) {
                 return res.status(404).json({ message: "Staff not found" });
             }
-
+    
             const stfStaffType = staffTypeRows[0].stfStaffType;
-
+    
             if (stfStaffType === 'Doctor') {
+                // Check if the user has already donated blood at the specified slot time
+                const [existingDonation] = await db.promise().query(
+                    'SELECT * FROM history WHERE user_id = ? AND slot_time = ?',
+                    [userId, slot_time]
+                );
+    
+                if (existingDonation.length > 0) {
+                    return res.status(400).json({ message: "User has already donated blood at this slot time" });
+                }
+    
                 // Retrieve appointment details from confirmedappointments
                 const [appointmentDetails] = await db.promise().query(
                     'SELECT stf_id, user_id, user_name, user_age, user_phone, slot_time ' +
@@ -150,26 +160,39 @@ module.exports = function ManageAppointmentController(app, db) {
                     'WHERE stf_id = ? AND user_id = ? AND slot_time >= ? AND slot_time < DATE_ADD(?, INTERVAL 1 SECOND)',
                     [stf_id, userId, slot_time, slot_time]
                 );
-
+    
                 if (appointmentDetails.length > 0) {
                     // Begin transaction
                     await db.promise().beginTransaction();
-
+    
                     try {
                         // Insert into history
                         await db.promise().query(
                             'INSERT INTO history (stf_id, user_id, user_name, user_age, user_phone, slot_time, blood_group, unit) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                             [appointmentDetails[0].stf_id, appointmentDetails[0].user_id, appointmentDetails[0].user_name, appointmentDetails[0].user_age, appointmentDetails[0].user_phone, appointmentDetails[0].slot_time, blood_group, unit]
                         );
-
+    
+                        // Update blood donation status in confirmedappointments
+                        await db.promise().query(
+                            'UPDATE confirmedappointments SET blood_donated = ? WHERE stf_id = ? AND user_id = ? AND slot_time = ?',
+                            [true, stf_id, userId, slot_time]
+                        );
+    
+                        // Update blood stock
+                        await db.promise().query(
+                            'UPDATE blood_inventory SET total_unit = total_unit + ?, current_stock = current_stock + ? WHERE blood_group = ?',
+                            [unit, unit, blood_group]
+                        );
+    
                         // Commit transaction
                         await db.promise().commit();
-
+    
                         res.json({ message: "Person has donated blood" });
                     } catch (error) {
                         // Rollback transaction on error
                         await db.promise().rollback();
-                        throw error; // Rethrow the error for global error handling
+                        console.error(error);
+                        res.status(500).json({ message: "Internal Server Error" });
                     }
                 } else {
                     res.status(404).json({ message: "Appointment not found in confirmedappointments" });
@@ -182,4 +205,5 @@ module.exports = function ManageAppointmentController(app, db) {
             res.status(500).json({ message: "Internal Server Error" });
         }
     });
+    
 }

@@ -63,7 +63,7 @@ module.exports = function ManageDonationController(app, db) {
 
             // If status changed to "approved", send notification to donor via WebSocket
             if (status === 'approved') {
-                const donation = await db.promise().query('SELECT donorId FROM blood_donations WHERE id = ?', [donationId]);
+                const donation = await db.promise().query('SELECT id FROM blood_donations WHERE id = ?', [donationId]);
                 const donorId = donation[0][0].donorId;
                 const message = 'Your blood donation is accepted!';
                 // Send notification message to WebSocket client (donor)

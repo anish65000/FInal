@@ -73,6 +73,26 @@ app.put("/login/stf/inv/update/:id", (req, res) => {
       });
     });
 
+    // GET blood stock details by ID
+app.get("/login/stf/inv/:id", (req, res) => {
+  const id = req.params.id;
+  const sqlSelectById = "SELECT * FROM blood_inventory WHERE id = ?";
+
+  db.query(sqlSelectById, [id], (err, result) => {
+    if (err) {
+      console.error('Error fetching blood stock by ID:', err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      if (result.length === 0) {
+        res.status(404).send("Blood stock not found");
+      } else {
+        res.send(result[0]);
+      }
+    }
+  });
+});
+
+
 
     
 

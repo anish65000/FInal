@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Assuming you have axios installed
 
-
 const CampSearch = () => {
   const [district, setDistrict] = useState('');
   const [bloodGroup, setBloodGroup] = useState('');
@@ -50,7 +49,7 @@ const CampSearch = () => {
             value={district}
             onChange={(event) => setDistrict(event.target.value)}
             required
-            className="bg-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-md"
+            className="input-field"
           />
           <label htmlFor="bloodGroup">Blood Group:</label>
           <input
@@ -60,15 +59,19 @@ const CampSearch = () => {
             value={bloodGroup}
             onChange={(event) => setBloodGroup(event.target.value)}
             required
-            className="bg-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-md"
+            className="input-field"
           />
         </div>
-        <button type="submit" className="btn-primary mt-4">
-          {isLoading ? 'Searching...' : 'Search Now'}
+        <button type="submit" className="btn-primary">
+          {isLoading ? (
+            <div className="spinner"></div>
+          ) : (
+            'Search Now'
+          )}
         </button>
       </form>
-      {error && <p className="text-red-500 mt-4">{error}</p>}
-      {camps.length > 0 && (
+      {error && <p className="error-message">{error}</p>}
+      {camps.length > 0 ? (
         <div className="camp-results">
           <h2>Camp Results</h2>
           <ul>
@@ -86,6 +89,8 @@ const CampSearch = () => {
             ))}
           </ul>
         </div>
+      ) : (
+        !isLoading && <p className="no-results">No camps found.</p>
       )}
     </div>
   );
