@@ -10,7 +10,7 @@ function RideRequestForm() {
   const queryParams = new URLSearchParams(location.search);
   const { requestId } = useParams();
   const [destination, setDestination] = useState('');
-  const [riderId, setRiderId] = useState('');
+  const [selectedRider, setSelectedRider] = useState('');
   const [riders, setRiders] = useState([]);
   const [donorDetails, setDonorDetails] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -32,9 +32,7 @@ function RideRequestForm() {
       try {
         const response = await axios.get(`http://localhost:5000/urgentrequests/${requestId}`);
         const requestData = response.data;
-
-        setDestination(requestData.destination);
-        setRiderId(requestData.riderId);
+        setDestination(requestData.urgentRequest.location); // Set destination to location value
       } catch (error) {
         console.error('Error fetching ride request data:', error);
       }
@@ -54,7 +52,7 @@ function RideRequestForm() {
       const response = await axios.post(
         'http://localhost:5000/requestride',
         {
-          riderId,
+          riderId: selectedRider, // Changed to riderId
           destination,
           requestId,
         },
@@ -103,8 +101,8 @@ function RideRequestForm() {
               </label>
               <select
                 id="rider"
-                value={riderId}
-                onChange={(e) => setRiderId(e.target.value)}
+                value={selectedRider}
+                onChange={(e) => setSelectedRider(e.target.value)}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               >
                 <option value="">Select Rider</option>

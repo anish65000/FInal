@@ -64,14 +64,14 @@ const UserSidebar = () => {
               </Link>
             </div>
           </li>
-          <li className="opcion-con-desplegable">
+          {/* <li className="opcion-con-desplegable">
             <div className="flex items-center justify-between p-2 hover:bg-custom-green">
               <Link to="/Seller/SellerProfile" className="flex items-center text-white">
                 <Person2 className="mr-2" />
                 <span>Profile</span>
               </Link>
             </div>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </aside>

@@ -5,8 +5,9 @@ const RiderContext = createContext();
 
 const initialState = {
   isLoggedIn: false,
+  riderType: null,
   riderName: null,
-  bloodType: null,
+  riderData: {},
   isLoading: false,
   error: null,
 };
@@ -17,31 +18,18 @@ const riderReducer = (state, action) => {
       return {
         ...state,
         isLoggedIn: true,
+        riderType: action.riderType || null,
         riderName: action.riderName || null,
-        bloodType: action.bloodType || null,
+        riderData: action.riderData || {},
         isLoading: false,
         error: null,
       };
     case 'LOGOUT':
-      return {
-        ...state,
-        isLoggedIn: false,
-        riderName: null,
-        bloodType: null,
-        isLoading: false,
-        error: null,
-      };
+      return { ...initialState };
     case 'SET_LOADING':
-      return {
-        ...state,
-        isLoading: action.isLoading,
-      };
+      return { ...state, isLoading: action.isLoading };
     case 'SET_ERROR':
-      return {
-        ...state,
-        error: action.error,
-        isLoading: false,
-      };
+      return { ...state, error: action.error, isLoading: false };
     default:
       return state;
   }
@@ -51,34 +39,25 @@ export const RiderProvider = ({ children }) => {
   const [state, dispatch] = useReducer(riderReducer, initialState);
 
   useEffect(() => {
-    const storedRiderData = localStorage.getItem('riderData');
-
-    if (storedRiderData) {
-      try {
-        const parsedRiderData = JSON.parse(storedRiderData);
-        const { riderName, bloodType } = parsedRiderData;
-
-        // Pass the parsedRiderData to login to ensure authentication data is correctly set
-        login(riderName, bloodType);
-      } catch (error) {
-        // Handle JSON parsing error
-        console.error('Error parsing stored rider data:', error);
-        // Optionally, clear invalid data from localStorage
-        localStorage.removeItem('riderData');
-      }
+    // Initialize state from local storage
+    const token = localStorage.getItem('token');
+    const riderName = localStorage.getItem('riderName');
+    const riderType = localStorage.getItem('riderType');
+    if (token && riderName && riderType) {
+      dispatch({ type: 'LOGIN', riderType, riderName });
     }
   }, []);
 
-  const login = (riderName, bloodType) => {
-    localStorage.setItem('riderData', JSON.stringify({ riderName, bloodType }));
-    dispatch({ type: 'LOGIN', riderName, bloodType });
+  const login = (riderType, riderName, riderData) => {
+    dispatch({ type: 'LOGIN', riderType, riderName, riderData });
   };
 
   const logout = () => {
     dispatch({ type: 'LOGOUT' });
-    localStorage.removeItem('riderData');
-    // Optionally, redirect to login page
-    // window.location.href = '/rider/login';
+    // Clear local storage upon logout
+    localStorage.removeItem('token');
+    localStorage.removeItem('riderName');
+    localStorage.removeItem('riderType');
   };
 
   const setLoading = (isLoading) => {
@@ -89,8 +68,19 @@ export const RiderProvider = ({ children }) => {
     dispatch({ type: 'SET_ERROR', error });
   };
 
+  const checkAuth = () => {
+    // Implement your authentication check here
+    // For simplicity, I'm assuming the user is always authenticated when the component mounts
+    dispatch({ type: 'SET_LOADING', isLoading: true });
+    setTimeout(() => {
+      dispatch({ type: 'SET_LOADING', isLoading: false });
+    }, 1000); // Simulating async operation
+  };
+
   return (
-    <RiderContext.Provider value={{ state, login, logout, setLoading, setError }}>
+    <RiderContext.Provider
+      value={{ state, login, logout, setLoading, setError, checkAuth }}
+    >
       {children}
     </RiderContext.Provider>
   );
@@ -98,10 +88,8 @@ export const RiderProvider = ({ children }) => {
 
 export const useRider = () => {
   const context = useContext(RiderContext);
-
   if (!context) {
     throw new Error('useRider must be used within a RiderProvider');
   }
-
   return context;
 };

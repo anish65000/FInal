@@ -45,10 +45,9 @@ const PremiumDonorController = (app, db) => {
     const {
       latitude,
       longitude,
-      availabilityTime,
+      availability,
       donorhealth,
       previousdontaion,
-      DonorType
     } = req.body;
   
     const userId = req.user.userId; // Accessing userId from the request object
@@ -85,13 +84,13 @@ const PremiumDonorController = (app, db) => {
           user_id,
           latitude,
           longitude,
-          availability_time,
+          availability,
           donor_health,
           previous_dontaion,
           profile_picture,
-          donor_type
+        
         )
-        VALUES (?,?,?,?,?,?,?,?);
+        VALUES (?,?,?,?,?,?,?);
       `;
   
       // Use await to ensure the file upload is completed before continuing
@@ -99,11 +98,10 @@ const PremiumDonorController = (app, db) => {
         userId,
         latitude,
         longitude,
-        availabilityTime,
+        availability,
         donorhealth,
         previousdontaion,
         profilePicture,
-        DonorType,
       ]);
   
       if (!success) {
@@ -179,10 +177,9 @@ const PremiumDonorController = (app, db) => {
     const {
       latitude,
       longitude,
-      availabilityTime,
-      donorType,
+      availability,
       donorhealth,
-      Donation // Assuming this is a field to update donation status
+      Donation ,
     } = req.body;
 
     try {
@@ -199,9 +196,9 @@ const PremiumDonorController = (app, db) => {
         updateValues.push(longitude);
       }
 
-      if (availabilityTime) {
-        updateFields += 'availability_time = ?, ';
-        updateValues.push(availabilityTime);
+      if (availability) {
+        updateFields += 'availability = ?, ';
+        updateValues.push(availability);
       }
 
       if (req.file) {

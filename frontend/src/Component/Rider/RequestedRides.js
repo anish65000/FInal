@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import DonorNavbar from './DonorNavbar';
 
 const RequestedRides = () => {
   const [requestedRides, setRequestedRides] = useState([]);
@@ -45,17 +46,19 @@ const RequestedRides = () => {
   }
 
   return (
-    <div className="container bg-pastel-green">
+    <>
+      <DonorNavbar/>
+    <div className="container bg-nav-gray">
       <h2 className="my-4 text-center text-primary">Requested Rides</h2>
       <div className="row row-cols-1 row-cols-md-2 g-4">
         {requestedRides.map(ride => (
           <div key={ride.donor_id} className="col">
-            <div className="card rounded-lg bg-pastel-green shadow-sm">
+            <div className="card rounded-lg   shadow-sm">
               <div className="card-body bg-tahiti">
                 <div className="d-flex justify-content-between mb-3">
                   <h5 className="card-title text-primary">{`Destination: ${ride.destination}`}</h5>
-                  <div className="text-muted">
-                    <small><strong>User:</strong> {ride.userName}</small><br />
+                  <div className="text-muted bg-green">
+                    <small><strong>User:</strong> {ride.recipient_name}</small><br />
                     <small><strong>Phone:</strong> {ride.userPhone}</small>
                   </div>
                 </div>
@@ -90,6 +93,7 @@ const RequestedRides = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };
 

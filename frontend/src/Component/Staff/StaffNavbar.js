@@ -36,7 +36,7 @@ const StaffNavbar = () => {
       <div className="container mx-auto p-7 flex items-center justify-between">
         {/* Staff Home Page Link */}
         <div className="flex items-center ml-auto space-x-4">
-          <Link to="/staff-home" className="text-custom-green mr-4 font-bold">
+          <Link to="/staffhomepage" className="text-custom-green mr-4 font-bold">
             <FontAwesomeIcon icon={faHome} size="lg" />
             <span className="ml-2 font-normal font-['Elephant']">Home</span>
           </Link>

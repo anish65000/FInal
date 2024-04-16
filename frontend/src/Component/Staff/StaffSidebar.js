@@ -146,6 +146,7 @@ const StaffSidebar = () => {
                       <FaAmbulance className="mr-2" />
                       <span>Manage rider</span>
                     </Link>
+
                   </div>
                 </li>
               </ul>

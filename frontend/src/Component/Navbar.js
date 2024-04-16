@@ -6,13 +6,16 @@ import logo from './../Assest/img/logo.png';
 
 const Navbar = () => {
   return (
-    <nav className="bg-red p-4 sticky top-0 z-50 flex justify-between items-center">
+    <nav className="bg-nav-gray  p-4 sticky top-0 z-50 flex justify-between items-center">
       <div className="flex items-center">
-        <Link to="/" className="flex items-center"> {/* Move link inside the container */}
-          <div className="text-gray font-bold text-xl mr-2">Blood Care Nexus</div>
-          <img className="logo" src={logo} alt="Logo" />
-        </Link>
-      </div>
+  <Link to="/" className="flex items-center" style={{ textDecoration: 'none' }}>
+    
+    <div className="text-gray font-bold text-xl mr-2">Blood Care Nexus</div>
+    <img className="logo" src={logo} alt="Logo" />
+  </Link>
+</div>
+
+      
       <div className="flex space-x-20 items-center ml-auto ">
         <ul className="flex space-x-20 text-gray">
           <li className="flex space-x-20">

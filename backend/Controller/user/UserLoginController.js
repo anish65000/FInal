@@ -20,7 +20,7 @@ const UserLoginController = (db) => {
     try {
       // Use the provided MySQL connectio
       db.query(
-        'SELECT ul.user_id, ul.userPassword, ul.username, ud.userRole FROM user_login ul JOIN user_details ud ON ul.user_id = ud.id WHERE ul.username = ?',
+        'SELECT ul.user_id, ul.userPassword,ud.userName, ul.username, ud.userRole FROM user_login ul JOIN user_details ud ON ul.user_id = ud.id WHERE ul.username = ?',
         [username],
         (error, results) => {
           if (error) {
@@ -36,6 +36,7 @@ const UserLoginController = (db) => {
           const storedPasswordHash = results[0].userPassword;
           const userId = results[0].user_id;
           const userRole = results[0].userRole;
+          const userFullName = results[0].userName;
 
           // Compare the provided password with the stored hashed password synchronously
           const passwordMatch = bcrypt.compareSync(enteredPassword, storedPasswordHash);
@@ -51,12 +52,12 @@ if (!secretKey) {
   return res.status(500).json({ success: false, message: 'Internal Server Error' });
 }
 
-const token = jwt.sign({ userId, username, userRole }, secretKey, {
+const token = jwt.sign({ userId,userFullName, username, userRole }, secretKey, {
   expiresIn: '1w', // Token expiration time (adjust as needed)
 });
 
 // Send the token as part of the response along with additional user data
-res.status(200).json({ success: true, message: 'Login successful', token, userData: { userId, username, userRole } });
+res.status(200).json({ success: true, message: 'Login successful', token, userData: { userId, userFullName ,username, userRole } });
 
         }
       );

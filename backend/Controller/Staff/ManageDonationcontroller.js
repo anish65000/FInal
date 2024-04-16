@@ -2,16 +2,16 @@ const authenticateToken = require('../authenticateToken');
 const WebSocket = require('ws'); // Import WebSocket library
 
 module.exports = function ManageDonationController(app, db) {
-    const wss = new WebSocket.Server({ port: 8090 }); // Create WebSocket server
+    // const wss = new WebSocket.Server({ port: 8090 }); // Create WebSocket server
 
-    // WebSocket connection event
-    wss.on('connection', (ws) => {
-        console.log('Client connected to WebSocket');
+    // // WebSocket connection event
+    // wss.on('connection', (ws) => {
+    //     console.log('Client connected to WebSocket');
 
-        ws.on('close', () => {
-            console.log('Client disconnected from WebSocket');
-        });
-    });
+    //     ws.on('close', () => {
+    //         console.log('Client disconnected from WebSocket');
+    //     });
+    // });
 
     // Endpoint to get all donations
     app.get('/donations', authenticateToken, async (req, res) => {
@@ -66,10 +66,7 @@ module.exports = function ManageDonationController(app, db) {
                 const donation = await db.promise().query('SELECT id FROM blood_donations WHERE id = ?', [donationId]);
                 const donorId = donation[0][0].donorId;
                 const message = 'Your blood donation is accepted!';
-                // Send notification message to WebSocket client (donor)
-                wss.clients.forEach((client) => {
-                    client.send(JSON.stringify({ recipient: donorId, message }));
-                });
+                
             }
 
             res.status(200).json({ message: 'Donation status updated successfully' });

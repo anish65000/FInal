@@ -13,6 +13,7 @@ const PremiumDonorDetails = () => {
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [urgentRequestForm, setUrgentRequestForm] = useState(false);
   const [message, setMessage] = useState('');
+  const [location, setLocation] = useState('');
   const [timeRequiredInMinutes, setTimeRequiredInMinutes] = useState(30); // Default time required
   const navigate = useNavigate();
 
@@ -100,35 +101,39 @@ const PremiumDonorDetails = () => {
 
   const handleSubmitUrgentRequest = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Unauthorized: Token missing');
-      }
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Unauthorized: Token missing');
+        }
 
-      const response = await fetch(`http://localhost:5000/api/urgentrequest/${id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ message, timeRequiredInMinutes }),
-      });
+        const response = await fetch(`http://localhost:5000/api/urgentrequest/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ message, timeRequiredInMinutes, location }),
+        });
 
-      if (response.ok) {
-        console.log('Urgent request sent successfully');
-        toast.success('Urgent blood request sent successfully');
-        setUrgentRequestForm(false);
-      } else if (response.status === 400) {
-        console.log('Existing urgent request found');
-        toast.info('You have already sent an urgent request to this donor');
-      } else {
-        throw new Error('Failed to send urgent blood request');
-      }
+        if (response.ok) {
+            console.log('Urgent request sent successfully');
+            toast.success('Urgent blood request sent successfully');
+            setUrgentRequestForm(false);
+        } else if (response.status === 400) {
+            console.log('Existing urgent request found');
+            toast.info('You have already sent an urgent request to this donor');
+        } else if (response.status === 404) { // Handle 404 error for donor not available
+            console.log('Donor is not available, please try another donor');
+            toast.error('Donor is not available, please try another donor');
+        } else {
+            throw new Error('Failed to send urgent blood request');
+        }
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to send urgent blood request');
+        console.error('Error:', error);
+        toast.error('Failed to send urgent blood request');
     }
-  };
+};
+
 
   if (!id) {
     return <p>Error: Donor ID is not provided</p>;
@@ -201,30 +206,37 @@ const PremiumDonorDetails = () => {
             </div>
           )}
 
-          {urgentRequestForm && (
-            <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center">
-              <div className="bg-white p-6 rounded-md">
-                <h3 className="text-xl font-bold mb-4">Request Blood Urgently</h3>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="w-full h-32 border-gray-300 rounded-md resize-none mb-4"
-                  placeholder="Enter your message for urgent blood request..."
-                />
-                <input
-                  type="number"
-                  value={timeRequiredInMinutes}
-                  onChange={(e) => setTimeRequiredInMinutes(e.target.value)}
-                  className="w-full border-gray-300 rounded-md mb-4"
-                  placeholder="Enter time required in minutes"
-                />
-                <div className="flex justify-end">
-                  <button onClick={() => setUrgentRequestForm(false)} className="text-gray mr-4">Cancel</button>
-                  <button onClick={handleSubmitUrgentRequest} className="bg-red text-white px-4 py-2 rounded-md">Submit</button>
-                </div>
-              </div>
-            </div>
-          )}
+{urgentRequestForm && (
+  <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center">
+    <div className="bg-white p-6 rounded-md">
+      <h3 className="text-xl font-bold mb-4">Request Blood Urgently</h3>
+      <textarea
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        className="w-full h-32 border-gray-300 rounded-md resize-none mb-4"
+        placeholder="Enter your message for urgent blood request..."
+      />
+      <input
+        type="number"
+        value={timeRequiredInMinutes}
+        onChange={(e) => setTimeRequiredInMinutes(e.target.value)}
+        className="w-full border-gray-300 rounded-md mb-4"
+        placeholder="Enter time required in minutes"
+      />
+      <input
+        type="text"
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
+        className="w-full border-gray-300 rounded-md mb-4"
+        placeholder="Enter location"
+      />
+      <div className="flex justify-end">
+        <button onClick={() => setUrgentRequestForm(false)} className="text-gray mr-4">Cancel</button>
+        <button onClick={handleSubmitUrgentRequest} className="bg-red text-white px-4 py-2 rounded-md">Submit</button>
+      </div>
+    </div>
+  </div>
+)}
 
           {/* Include ToastContainer to display toasts */}
           <ToastContainer />

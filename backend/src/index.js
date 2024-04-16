@@ -38,7 +38,12 @@ const ManageStaffController = require('../Controller/Admin/Managestaff')
 
 const RecipientInventoryController = require('../Controller/Staff/RecipientsManagemnt')
 const ManageUserController = require('../Controller/Admin/Manageuser')
-const ManageRiderController = require('../Controller/Admin/ManageRider')
+const ManageRiderController = require('../Controller/Admin/ManageRider');
+// const RiderNotification = require('../Controller/Staff/notification/RiderNotification');
+const  RiderProfilerController = require('../Controller/Rider/RiderProfile')
+const DashboardController = require('../Controller/Admin/Dashboard')
+const DonationRequestController = require('../Controller/user/ViewDonorRequest')
+
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -73,7 +78,7 @@ db.connect(err => {
   console.log('Connected to MySQL database');
 });
 
-const wss = new WebSocket.Server({ port: 8081 });
+// const wss = new WebSocket.Server({ port: 5003 });
 RiderController(app,db);
 UserRegisterController(app, db);
 ManageAppointmentController(app, db,authenticateToken);
@@ -90,7 +95,7 @@ ManageUserController(app, db, authenticateToken);
 userLoginController(app, db);
 BloodbankController(app, db);
 campController(app, db);
-DonorController(app, db, wss); // Pass wss to DonorController
+ DonorController(app, db,); // Pass wss to DonorController
 BookAppointmentController(app, db, authenticateToken);
 handleAppointmentController(app, db);
 PremiumDonorController(app, db);
@@ -109,8 +114,12 @@ startRideController(app, db, authenticateToken);
 ManageStaffController(app, db, authenticateToken);
 RecipientInventoryController(app,db);
 ManageRiderController(app, db, authenticateToken);
+RiderProfilerController(app, db, authenticateToken);
+DashboardController(app,db);
+app.use(DonationRequestController(db));
 
-DonorNotification(app, db, wss); // Pass wss to DonorNotification
+// RiderNotification(app, db, wss); 
+// DonorNotification(app, db, wss); // Pass wss to DonorNotification
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

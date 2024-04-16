@@ -6,7 +6,9 @@ import DonorSidebar from "./Donor/Donorsidebar";
 const PremiumDonorProfile = () => {
   const [premiumDonor, setPremiumDonor] = useState(null);
   const [forbiddenAccess, setForbiddenAccess] = useState(false);
-  const [error, setError] = useState(null); // Add error state
+  const [error, setError] = useState(null);
+  const [availability, setAvailability] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false); // State for edit mode
 
   useEffect(() => {
     const fetchPremiumDonorDetails = async () => {
@@ -18,11 +20,12 @@ const PremiumDonorProfile = () => {
           },
         });
         setPremiumDonor(response.data.premium_donor);
+        setAvailability(response.data.premium_donor.availability); // Set availability from fetched data
       } catch (error) {
         if (error.response && error.response.status === 403) {
           setForbiddenAccess(true);
         } else {
-          setError("The user is not associated with the premium donor feature. Please register as a premium donor if you want to become one."); // Set error state
+          setError("The user is not associated with the premium donor feature. Please register as a premium donor if you want to become one.");
           console.error("Error fetching premium donor details:", error);
         }
       }
@@ -31,17 +34,37 @@ const PremiumDonorProfile = () => {
     fetchPremiumDonorDetails();
   }, []);
 
+  const handleAvailabilityChange = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.patch(
+        "http://localhost:5000/premiumdonors",
+        { availability: availability },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsEditMode(false); // Exit edit mode after successful update
+      // Optionally, you can update the premium donor details here as well
+    } catch (error) {
+      console.error("Error updating availability:", error);
+    }
+  };
+
   if (forbiddenAccess) {
     return <div>Access forbidden. Only premium donors can access this page.</div>;
   }
 
   if (error) {
-    return <div className="text-red text-lg">{error}</div>; // Styled error message
+    return <div className="text-red text-lg">{error}</div>;
   }
 
   if (!premiumDonor) {
     return <div>Loading...</div>;
   }
+
 
   return (
     <>
@@ -73,7 +96,7 @@ const PremiumDonorProfile = () => {
                         </label>
                         <input
                           type="text"
-                          value={`${premiumDonor.userName} (${premiumDonor.userAge})`}
+                          value={`${premiumDonor.userName} `}
                           className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
                           disabled
                         />
@@ -165,19 +188,7 @@ const PremiumDonorProfile = () => {
                         {premiumDonor.userName}
                       </label>
                     </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="donor_type"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Donor Type
-                      </label>
-                      <textarea
-                        value={premiumDonor.donor_type}
-                        className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
-                        rows="3"
-                      />
-                    </div>
+                    
                     <div className="mb-4">
                       <label
                         htmlFor="donor_health"
@@ -205,6 +216,50 @@ const PremiumDonorProfile = () => {
                         rows="3"
                         disabled
                       />
+                    </div>
+
+                    <div className="mb-4">
+                      <label
+                        htmlFor="availability"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Availability
+                      </label>
+                      {isEditMode ? (
+                        <select
+                          value={availability}
+                          onChange={(e) => setAvailability(e.target.value)}
+                          className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green"
+                        >
+                          <option value="available">Available</option>
+                          <option value="not_available">NotAvailable</option>
+                        </select>
+                      ) : (
+                        <textarea
+                          value={availability}
+                          className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
+                          rows="3"
+                          disabled
+                        />
+                      )}
+                      {/* Render edit button only when not in edit mode */}
+                      {!isEditMode && (
+                        <button
+                          onClick={() => setIsEditMode(true)}
+                          className="mt-2 bg-pastel-green hover:bg-light-green text-white font-bold py-2 px-4 rounded"
+                        >
+                          Edit Availability
+                        </button>
+                      )}
+                      {/* Render save button only when in edit mode */}
+                      {isEditMode && (
+                        <button
+                          onClick={handleAvailabilityChange}
+                          className="mt-2 bg-pastel-green hover:bg-light-green text-white font-bold py-2 px-4 rounded"
+                        >
+                          Save
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

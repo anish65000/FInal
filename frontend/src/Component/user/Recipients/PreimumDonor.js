@@ -70,7 +70,7 @@ const PremiumDonorList = () => {
                     <div className="text-gray-700 font-bold">Address</div>
                     <div>{donor.userAddress}</div>
                     <div className="text-gray-700 font-bold">Last Donation</div>
-                    <div>{donor.last_donation_date}</div>
+                    <div>{donor.previous_dontaion}</div>
                   </div>
                 </div>
                 <div className="flex justify-between items-center mt-4">

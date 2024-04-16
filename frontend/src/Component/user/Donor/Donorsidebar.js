@@ -58,7 +58,7 @@ const DonorSidebar = () => {
           </li>
           <li className="opcion-con-desplegable">
             <div className="flex items-center justify-between p-2 hover:bg-custom-green">
-              <Link to="/donors" className="flex items-center text-gray">
+              <Link to="/DonationRequests" className="flex items-center text-gray">
                 <SupervisorAccount className="mr-2" />
                 <span>Donor Request</span>
               </Link>

@@ -8,6 +8,11 @@ const riderRequestController = (app, db, authenticateToken) => {
         const { staffId } = req.user; // Assuming staff ID is available in req.user after authentication
 
         try {
+            // Check if riderId is provided
+            if (!riderId) {
+                return res.status(400).json({ success: false, message: 'Rider ID is required' });
+            }
+
             // Check if there is already a ride request associated with the provided requestId
             const [existingRideRequest] = await db.promise().query(`
                 SELECT * FROM ride_requests WHERE request_id = ?
@@ -20,7 +25,7 @@ const riderRequestController = (app, db, authenticateToken) => {
 
             // Fetch premium donor details associated with the given request ID
             const [donorDetails] = await db.promise().query(`
-                SELECT pd.*, ud.userName, ud.userPhone, ud.userAddress, pd.latitude, pd.longitude
+                SELECT pd.*, ud.userName, ud.userPhone, ud.userAddress, pd.latitude, pd.longitude, ur.Recipent_name
                 FROM urgent_requests ur 
                 JOIN user_details ud ON ur.donor_id = ud.id
                 JOIN premium_donors pd ON ud.id = pd.premium_donor_id
@@ -37,9 +42,9 @@ const riderRequestController = (app, db, authenticateToken) => {
 
             // Insert the ride request into the database along with donor and user details
             const result = await db.promise().query(`
-                INSERT INTO ride_requests (rider_id, request_id, destination, donor_id,donor_details, latitude, longitude, userName, userPhone, staff_id)
-                VALUES (?, ?, ?, ?,?, ?, ?, ?, ?, ?)
-            `, [riderId, requestId, destination, donorDetails[0].premium_donor_id,JSON.stringify(donorDetails), donorDetails[0].latitude, donorDetails[0].longitude, donorDetails[0].userName, donorDetails[0].userPhone, staffId]);
+                INSERT INTO ride_requests (rider_id, request_id, destination, donor_id, donor_details, latitude, longitude, userName, userPhone, staff_id, recipient_name)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `, [riderId, requestId, destination, donorDetails[0].premium_donor_id, JSON.stringify(donorDetails), donorDetails[0].latitude, donorDetails[0].longitude, donorDetails[0].userName, donorDetails[0].userPhone, staffId, donorDetails[0].Recipent_name]);
 
             // Check if the ride request was successfully inserted
             if (result[0].affectedRows === 1) {

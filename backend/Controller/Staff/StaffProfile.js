@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('../authenticateToken');
-
+const upload = require('./multerConfig'); 
 const StaffProfilerController = (app, connection) => {
   // Helper function to run SQL queries using callback-based approach
   const query = (connection, sql, params) => {
@@ -33,27 +33,51 @@ const StaffProfilerController = (app, connection) => {
   });
 
   // Endpoint to retrieve all user profiles (requires authentication)
- // Modify the backend to fetch all user profiles with avatar data
-app.get('/allstfprofiles', authenticateToken, async (req, res) => {
-  try {
-    // Fetch all user profiles with avatar data from the database
-    const userProfiles = await query(connection, 'SELECT id, stfName, stfMail, stfPhone, stfAddress, stfStaffType, avatar FROM stf_details');
+  app.get('/allstfprofiles', authenticateToken, async (req, res) => {
+    try {
+      // Fetch all user profiles with avatar data from the database
+      const userProfiles = await query(connection, 'SELECT id, stfName, stfMail, stfPhone, stfAddress, stfStaffType, avatar FROM stf_details');
 
-    // Convert the avatar data to Base64 string before sending it in the response
-    const userProfilesWithBase64Avatar = userProfiles.map(profile => {
-      if (profile.avatar && profile.avatar.data) {
-        profile.avatar = profile.avatar.data.toString('base64');
+      // Convert the avatar data to Base64 string before sending it in the response
+      const userProfilesWithBase64Avatar = userProfiles.map(profile => {
+        if (profile.avatar && profile.avatar.data) {
+          profile.avatar = profile.avatar.data.toString('base64');
+        }
+        return profile;
+      });
+
+      // Send the user profiles with avatar data in the response
+      res.status(200).send({ allUserProfiles: userProfilesWithBase64Avatar });
+    } catch (error) {
+      console.error('Error fetching user profiles:', error);
+      res.status(500).send({ error: 'Internal Server Error' });
+    }
+  });
+
+  // Endpoint to update user profile (requires authentication and Multer for file upload)
+  app.put('/updatestfprofile', authenticateToken, upload.single('avatar'), async (req, res) => {
+    try {
+      // Handle file upload using Multer
+      if (!req.file) {
+        return res.status(400).send({ error: 'No file uploaded' });
       }
-      return profile;
-    });
-
-    // Send the user profiles with avatar data in the response
-    res.status(200).send({ allUserProfiles: userProfilesWithBase64Avatar });
-  } catch (error) {
-    console.error('Error fetching user profiles:', error);
-    res.status(500).send({ error: 'Internal Server Error' });
-  }
-});
+      // Fetch user ID from authentication token
+      const userId = req.user.userId;
+      // Fetch other user profile details from request body
+      const { stfName, stfMail, stfPhone, stfAddress, stfStaffType } = req.body;
+      // Process the uploaded file (if needed)
+      
+      const updatedProfile = await query(connection, 'UPDATE stf_details SET stfName=?, stfMail=?, stfPhone=?, stfAddress=?, stfStaffType=?, avatar=? WHERE id=?', [stfName, stfMail, stfPhone, stfAddress, stfStaffType, req.file.filename, userId]);
+      if (updatedProfile.affectedRows === 0) {
+        return res.status(404).send({ error: 'User profile not found' });
+      }
+      // Return success response
+      res.status(200).send({ message: 'Profile updated successfully' });
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      res.status(500).send({ error: 'Internal Server Error' });
+    }
+  });
 
 };
 

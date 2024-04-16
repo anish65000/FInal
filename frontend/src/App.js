@@ -46,7 +46,7 @@ import BloodAppointmentForm  from './Component/user/Donor/BookAppointmentForm';
 import AvailableSlotsComponent from './Component/user/Donor/AvailableSlotsComponent';
 //import BloodAppointmentForm from './Component/user/Donor/BookAppointmentForm';
 
-import DonorRequests from './Component/user/DonorRequests';
+// import DonorRequests from './Component/user/DonorRequests';
 
 import RiderHomePage from './Component/Rider/HomePage';
 
@@ -81,6 +81,10 @@ import ManageUsers from './Component/Admin/Mangeuser';
 import ManageStaff from './Component/Admin/ManageStaff';
 import RiderManagement from './Component/Admin/Managerider';
 import BloodInventoryDashboard from './Component/Admin/BloodStockDashboard';
+import RiderProfile from './Component/Rider/Riderprofile';
+import StaffEdit from './Component/Staff/StaffEdit';
+import Dashboard from './Component/Admin/Admindashboard';
+import DonationRequests from './Component/user/donationrequests';
 function App() {
   return (
     <BrowserRouter>
@@ -108,7 +112,7 @@ function App() {
             <Route path="/register" element={<UserRegister />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/staff" element={<StaffRegistration />} />
-            <Route path="/donor-requests" element={<DonorRequests />} />
+            
             <Route path="/bloodstock" element={<BloodStock />} />
             <Route path="/donorstock" element={<DonorStockComponent />} />
             <Route path="/testingblood" element={<BloodTestForm />} />
@@ -155,8 +159,16 @@ function App() {
             <Route path="/ManageRiders" element={<  RiderManagement />} />
 
             <Route path="/BloodInventoryDashboard" element={<   BloodInventoryDashboard />} />
-
             
+            <Route path="/riderprofile" element={<  RiderProfile />} />
+            <Route path="/staffedit" element={<  StaffEdit  />} />
+            <Route path="/staffprofile" element={<  StaffProfile  />} />
+            <Route path="/dashboard" element={<    Dashboard  />} />
+            <Route path="/DonationRequests" element={<     DonationRequests />} />
+
+           
+            
+          
            
              
           </Routes>
