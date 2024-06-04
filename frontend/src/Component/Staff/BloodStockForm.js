@@ -1,119 +1,120 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import Navbar from './StaffNavbar';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Navbar from '../Navbar';
+import StaffNavbar from './StaffNavbar';
 import StaffSidebar from './StaffSidebar';
 
-const BloodStockForm = () => {
-  // Use consistent naming for clarity
-  const [bloodStockData, setBloodStockData] = useState({
-    bloodGroup: '',
-    totalUnit: '',
-    currentStock: '',
-    bloodStatus: '',
-  });
+const BloodInventoryForm = () => {
+  const [bloodGroup, setBloodGroup] = useState('');
+  const [totalUnit, setTotalUnit] = useState('');
+  const [currentStock, setCurrentStock] = useState('');
+  const [bloodStatus, setBloodStatus] = useState('');
+  const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  const handleChange = (event) => {
-    setBloodStockData({ ...bloodStockData, [event.target.name]: event.target.value });
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.post('`http://localhost:5000/login/stf/inv/insert', bloodStockData);
-      console.log('Blood stock inserted successfully:', response.data);
-
-      // Handle success
-      // - Clear the form
-      setBloodStockData({
-        bloodGroup: '',
-        totalUnit: '',
-        currentStock: '',
-        bloodStatus: '',
+      const response = await fetch('http://localhost:5000/login/stf/inv/insert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          blood_group: bloodGroup,
+          total_unit: totalUnit,
+          current_stock: currentStock,
+          blood_status: bloodStatus,
+        }),
       });
-      // - Show a success message to the user
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        toast.success('Blood inventory submitted successfully!');
+      } else {
+        toast.error('Error submitting blood inventory.');
+      }
     } catch (error) {
-      console.error('Error during blood stock insertion:', error);
-
-      // Handle error
-      // - Show an error message to the user with specific details
+      console.error('Error:', error);
+      toast.error('An error occurred. Please try again.');
     }
   };
- return (
-  <>
-      <Navbar /> {/* Render Navbar */}
-      <StaffSidebar /> {/* Render StaffNavbar */}
-    <div className="container mx-auto grid grid-cols-2 gap-4 bg-gray shadow-md rounded-md p-8">
-      <h1 className="text-4xl font-bold mt-5 mb-8 text-center text-red-500">Blood Stock Form</h1>
-      <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-gray-200 rounded-md">
-        <div className="mb-4">
-          <label htmlFor="blood_group" className="block text-sm font-medium text-gray-600">
-            Blood Group
-          </label>
-          <input
-            type="text"
-            id="blood_group"
-            name="blood_group"
-            value={bloodStockData.bloodGroup}
-            onChange={handleChange}
-            className="input-field w-full border border-gray rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
-        </div>
 
-        <div className="mb-4">
-          <label htmlFor="total_unit" className="block text-sm font-medium text-gray-600">
-            Total Unit
-          </label>
-          <input
-            type="number"
-            id="total_unit"
-            name="total_unit"
-            value={bloodStockData.totalUnit}
-            onChange={handleChange}
-            className="input-field w-full border border-gray rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
+  return (
+    <>
+      <StaffNavbar />
+      <StaffSidebar />
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <ToastContainer />
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Blood Inventory</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="form-group">
+              <label htmlFor="bloodGroup" className="block text-gray-700 font-semibold">
+                Blood Group:
+              </label>
+              <select
+                id="bloodGroup"
+                value={bloodGroup}
+                onChange={(e) => setBloodGroup(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {bloodTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="totalUnit" className="block text-gray-700 font-semibold">
+                Total Unit:
+              </label>
+              <input
+                type="number"
+                id="totalUnit"
+                value={totalUnit}
+                onChange={(e) => setTotalUnit(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="currentStock" className="block text-gray-700 font-semibold">
+                Current Stock:
+              </label>
+              <input
+                type="number"
+                id="currentStock"
+                value={currentStock}
+                onChange={(e) => setCurrentStock(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="bloodStatus" className="block text-gray-700 font-semibold">
+                Blood Status:
+              </label>
+              <select
+                id="bloodStatus"
+                value={bloodStatus}
+                onChange={(e) => setBloodStatus(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="Available">Available</option>
+                <option value="Unavailable">Unavailable</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full transition-colors duration-300"
+            >
+              Submit
+            </button>
+          </form>
         </div>
-
-        <div className="mb-4">
-          <label htmlFor="current_stock" className="block text-sm font-medium text-gray-600">
-            Current Stock
-          </label>
-          <input
-            type="number"
-            id="current_stock"
-            name="current_stock"
-            value={bloodStockData.currentStock}
-            onChange={handleChange}
-            className="input-field w-full border border-gray rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="blood_status" className="block text-sm font-medium text-gray-600">
-            Blood Status
-          </label>
-          <input
-            type="text"
-            id="blood_status"
-            name="blood_status"
-            value={bloodStockData.bloodStatus}
-            onChange={handleChange}
-            className="input-field w-full border border-gray rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
-        </div>
-
-        <button type="submit" className="submit-button bg-red hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75">
-            Submit
-          </button>
-        </form>
       </div>
-      </>
-    
+    </>
   );
 };
 
-export default BloodStockForm;
+export default BloodInventoryForm;

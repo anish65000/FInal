@@ -24,11 +24,9 @@ const upload = multer({ storage: storage });
 
 // Assuming you have the executeQuery function as mentioned above
 const PremiumDonorController = (app, db) => {
-  // Assuming you are using MySQL as the database
   const util = require('util');
   const query = util.promisify(db.query).bind(db);
 
-  // Example usage:
   async function executeQuery(sql, values) {
     try {
       const result = await query(sql, values);
@@ -80,18 +78,18 @@ const PremiumDonorController = (app, db) => {
   
       // Proceed with premium donor registration logic here...
       const sqlInsert = `
-        INSERT INTO premium_donors (
-          user_id,
-          latitude,
-          longitude,
-          availability,
-          donor_health,
-          previous_dontaion,
-          profile_picture,
-        
-        )
-        VALUES (?,?,?,?,?,?,?);
-      `;
+      INSERT INTO premium_donors (
+        user_id,
+        latitude,
+        longitude,
+        availability,
+        donor_health,
+        previous_dontaion,
+        profile_picture
+      )
+      VALUES (?,?,?,?,?,?,?);
+    `;
+    
   
       // Use await to ensure the file upload is completed before continuing
       const { success, result, error } = await executeQuery(sqlInsert, [
@@ -126,7 +124,7 @@ const PremiumDonorController = (app, db) => {
       const sqlSelect = 'SELECT pd.*, ud.userName,ud.userAge, ud.userGender, ud.userBloodGroup, ud.userPhone, ud.userEmail, ud.userAddress FROM premium_donors pd JOIN user_details ud ON pd.user_id = ud.id;';
       const [donors] = await db.promise().query(sqlSelect);
 
-      // Append the full path to the profile picture in each donor objectS
+      // Append the full path to the profile picture 
       const donorsWithImagePath = donors.map(donor => ({
         ...donor,
         profile_picture: `/profile-pictures/${donor.profile_picture}`,
@@ -220,11 +218,6 @@ const PremiumDonorController = (app, db) => {
         updateFields += 'donation_status = ?, ';
         updateValues.push(Donation);
       }
-
-      // Remove the trailing comma and space from updateFields
-
-
-      // Remove the trailing comma and space from updateFields
       updateFields = updateFields.slice(0, -2);
 
       const sqlUpdate = `UPDATE premium_donors SET ${updateFields} WHERE premium_donor_id = ?;`;
@@ -241,7 +234,8 @@ const PremiumDonorController = (app, db) => {
     }
   });
 
-// Example endpoint to get premium donors' locations with additional user details
+
+// Neaby donor endpoints
 app.get('/api/premium-donors/locations', async (req, res) => {
   try {
     const sqlSelectLocations = `

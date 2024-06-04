@@ -70,8 +70,6 @@ const HomePage = () => {
   ))}
 </div>
 
-
-
         <br />
         <div className='w-full bg-blood text-white-900 h-max text-sm text-center font-bold'>
           <Footer/>

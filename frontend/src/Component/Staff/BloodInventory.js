@@ -2,21 +2,37 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './StaffNavbar';
 import StaffSidebar from './StaffSidebar';
+import DoctorSidebar from '../Doctor/DoctorSidebar';
+import { useStaff } from './StaffContext';
+import AdminSidebar from '../Admin/AdminSidebar';
+
 
 const BloodStockComponent = () => {
-  const [bloodStockList, setBloodStockList] = useState([]);
-  const [newBloodStock, setNewBloodStock] = useState({
-    blood_group: '',
-    total_unit: 0,
-    current_stock: 0,
-    blood_status: '',
-  });
+  
+  const { state } = useStaff();
+  const {  stfStaffType } = state;
 
+  const getSidebarComponent = () => {
+    switch (stfStaffType) {
+      case 'Doctor':
+        return <DoctorSidebar />;
+      case 'Staff':
+        return <StaffSidebar />;
+      case 'Admin':
+        return <AdminSidebar/>;
+      default:
+        return null;
+    }
+  };
+  const [bloodStockList, setBloodStockList] = useState([]);
   const [editingBloodStockId, setEditingBloodStockId] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar visibility
 
   // Fetch blood stock data when the component mounts
   useEffect(() => {
+    
+
+
     axios.get('http://localhost:5000/login/stf/inv')
       .then(response => {
         setBloodStockList(response.data);
@@ -49,32 +65,7 @@ const BloodStockComponent = () => {
     setEditingBloodStockId(id);
   };
 
-  const handleInsertBloodStock = () => {
-    // Check if total_unit or current_stock is 0
-    if (newBloodStock.total_unit === 0 || newBloodStock.current_stock === 0) {
-      alert('Total Units and Current Stock must be greater than 0.');
-      return;
-    }
-
-    // Update local state immediately
-    setBloodStockList(prevList => [...prevList, newBloodStock]);
-    // Clear the form
-    setNewBloodStock({
-      blood_group: '',
-      total_unit: 0,
-      current_stock: 0,
-      blood_status: '',
-    });
-
-    // Make the network request in the background
-    axios.post('http://localhost:5000/login/stf/inv/insert', newBloodStock)
-      .then(response => {
-        console.log('Blood stock inserted successfully:', response.data);
-        // If needed, update the state again based on the response
-        // setBloodStockList(prevList => [...prevList, response.data]);
-      })
-      .catch(error => console.error('Error inserting blood stock:', error));
-  };
+ 
 
   const handleDeleteBloodStock = id => {
     axios.delete(`http://localhost:5000/login/stf/inv/delete/${id}`)
@@ -87,13 +78,13 @@ const BloodStockComponent = () => {
   };
 
   return (
+    
     <>
       <Navbar />
-      <StaffSidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-      <div className={`container mx-auto p-4 text-lg ${isSidebarOpen ? 'ml-64' : ''}`}>
-        {!isSidebarOpen && (
+      {getSidebarComponent()}
+      
           <h1 className="text-4xl font-bold mb-4">Blood Stock Management</h1>
-        )}
+      
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-300 rounded-lg table-auto">
             <thead>
@@ -138,13 +129,15 @@ const BloodStockComponent = () => {
                     </td>
                     <td>
                       {editingBloodStockId === bloodStock.id ? (
-                        <input
-                          type="text"
+                        <select
                           value={bloodStock.blood_status}
                           onChange={(e) => setBloodStockList(prevList =>
                             prevList.map(item => (item.id === bloodStock.id ? { ...item, blood_status: e.target.value } : item))
                           )}
-                        />
+                        >
+                          <option value="Available">Available</option>
+                          <option value="Unavailable">Unavailable</option>
+                        </select>
                       ) : (
                         bloodStock.blood_status
                       )}
@@ -177,16 +170,9 @@ const BloodStockComponent = () => {
             </tbody>
           </table>
         </div>
-
-        {!isSidebarOpen && (
-          <div>
-            <p>Do you want to add blood in stock?</p>
-            {/* Insert blood stock form can go here */}
-          </div>
-        )}
-      </div>
+      
     </>
   );
-}
+};
 
 export default BloodStockComponent;

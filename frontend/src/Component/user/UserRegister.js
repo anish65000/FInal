@@ -4,8 +4,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import registerImage from '../../Assest/img/Register.png';
 import { useUser } from './Usercontext'; // Correct import
 
+
+
 const UserRegister = () => {
   const { login } = useUser(); // Using the useUser hook to get the login function
+ 
   const [user, setUser] = useState({
     userName: '',
     userAge: '',
@@ -25,15 +28,16 @@ const UserRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       setLoading(true);
-
+    
+  
       if (!user.userName || !user.userPhone || !user.userEmail || !user.userPassword || !user.userPasswordConfirmation || !user.userRole) {
         setError('Please fill in all required fields.');
         return;
       }
-
+  
       // Your registration logic...
       const res = await fetch('http://localhost:5000/register/user', {
         method: 'POST',
@@ -42,30 +46,32 @@ const UserRegister = () => {
         },
         body: JSON.stringify(user),
       });
-
+  
       if (res.ok) {
-        // Assuming login function sets the user as authenticated
-        login(user.userRole); // Log in the user after successful registration
+      
+        login(user.userRole); 
+
         toast.success('Registration successful!');
+        
+        setUser({
+          userName: '',
+          userAge: '',
+          userGender: '',
+          userBloodGroup: '',
+          userPhone: '',
+          userEmail: '',
+          userAddress: '',
+          userUserName: '',
+          userPassword: '',
+          userRole: '',
+          userPasswordConfirmation: ''
+        });
+        setError(null);
       } else {
         const data = await res.json();
         toast.error(data.message || 'Registration failed');
-      }
 
-      setUser({
-        userName: '',
-        userAge: '',
-        userGender: '',
-        userBloodGroup: '',
-        userPhone: '',
-        userEmail: '',
-        userAddress: '',
-        userUserName: '',
-        userPassword: '',
-        userRole: '',
-        userPasswordConfirmation: ''
-      });
-      setError(null);
+      }
     } catch (err) {
       console.error(err);
       toast.error(err.message || 'Registration failed. Please try again.');
@@ -73,6 +79,7 @@ const UserRegister = () => {
       setLoading(false);
     }
   };
+  
   return (
     <>
     <div className="min-h-screen flex items-center justify-center bg-lightblue">

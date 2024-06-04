@@ -74,18 +74,19 @@ const DashboardController = (app, connection) => {
 
   app.get('/api/countrider', async (req, res) => {
     try {
-      // Query to count staff members
+      // Query to count riders
       const sql = "SELECT COUNT(*) AS riderCount FROM bloodbank_riders";
       const result = await query(sql, []);
-      const staffCount = result[0].staffCount;
-
-      // Send the staff count as JSON response
-      res.json({ count: staffCount });
+      const riderCount = result[0].riderCount; 
+  
+      // Send the rider count as JSON response
+      res.json({ count: riderCount });
     } catch (err) {
       console.error('Error executing MySQL query:', err);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+  
 };
 
 module.exports = DashboardController;

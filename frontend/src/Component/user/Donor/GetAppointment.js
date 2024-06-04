@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Navbar from '../UserNavbar'; // Assuming Navbar component exists in a parent directory
-import Sidebar from './Donorsidebar'; // Assuming Sidebar component exists in a parent directory
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import Navbar from '../UserNavbar'; 
+import Sidebar from './Donorsidebar'; 
+import { Link } from 'react-router-dom'; 
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -43,7 +43,7 @@ const Appointments = () => {
       <Navbar />
       <div className="flex">
         <Sidebar />
-        <div className="flex w-full justify-center py-8"> {/* Applying justify-center class here */}
+        <div className="flex w-full justify-center py-8"> 
           <div className="w-1/2">
             {appointments.length > 0 ? (
               <div className="bg-white rounded shadow overflow-hidden">

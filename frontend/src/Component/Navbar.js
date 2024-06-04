@@ -19,17 +19,13 @@ const Navbar = () => {
       <div className="flex space-x-20 items-center ml-auto ">
         <ul className="flex space-x-20 text-gray">
           <li className="flex space-x-20">
-            <Link to="/homepage" className="flex items-center text-gray">
+            <Link to="/" className="flex items-center text-gray">
               <FontAwesomeIcon icon={faHome} className="mr-2" />
               Home
             </Link>
           </li>
-          <li>
-            <Link to="/events" className="flex items-center text-gray">
-              <FontAwesomeIcon icon={faCalendarAlt} className="mr-4" />
-              Events
-            </Link>
-          </li>
+          
+           
           <li>
             <Link to="/user/login" className="flex items-center text-gray">
               <FontAwesomeIcon icon={faUser} className="mr-2" />
@@ -49,7 +45,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/staff" className="flex items-center text-gray">
+            <Link to="/staff/login" className="flex items-center text-gray">
               <FontAwesomeIcon icon={faUsers} className="mr-2" />
               Staff
             </Link>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Home, Person, Inventory, ManageHistory, BloodtypeRounded } from "@mui/icons-material";
-import { FaCalendarAlt, FaChartBar, FaUserAstronaut, FaPlusSquare, FaAmbulance, FaPeopleArrows } from "react-icons/fa";
+import { Home, Person, Inventory, ManageHistory, BloodtypeRounded, StopCircleSharp } from "@mui/icons-material";
+import { FaCalendarAlt, FaChartBar, FaUserAstronaut, FaPlusSquare, FaAmbulance, FaPeopleArrows, FaSearchLocation, FaFirstAid } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
@@ -38,7 +38,7 @@ const StaffSidebar = () => {
               <ul className="space-y-2">
                 <li className="opcion-con-desplegable">
                   <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(0)}>
-                    <Link to="/" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link to="/staffhomepage" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
                       <Home className="mr-2" />
                       <span>Home</span>
                     </Link>
@@ -76,22 +76,7 @@ const StaffSidebar = () => {
                     </Link>
                   </div>
                 </li>
-                <li className="opcion-con-desplegable">
-                  <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(5)}>
-                    <Link to="/RegisterBank" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <FaChartBar className="mr-2" />
-                      <span>Bank</span>
-                    </Link>
-                  </div>
-                </li>
-                <li className="opcion-con-desplegable">
-                  <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(6)}>
-                    <Link to="/manage-bloodbanks" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <FaChartBar className="mr-2" />
-                      <span>Manage Bank</span>
-                    </Link>
-                  </div>
-                </li>
+
                 <li className="opcion-con-desplegable">
                   <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(7)}>
                     <Link to="/BloodRequestHistory" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -100,6 +85,7 @@ const StaffSidebar = () => {
                     </Link>
                   </div>
                 </li>
+
                 <li className="opcion-con-desplegable">
                   <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(8)}>
                     <Link to="/managedonation" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -109,46 +95,23 @@ const StaffSidebar = () => {
                   </div>
                 </li>
                 <li className="opcion-con-desplegable">
-                  <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(9)}>
-                    <Link to="/RecipientsComponent" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <FaUserAstronaut className="mr-2" />
-                      <span>Manage Recipients</span>
+                  <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(8)}>
+                    <Link to="/DonatedUserDetails" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <FaFirstAid className="mr-2" />
+                      <span>DonatedUserDetails</span>
                     </Link>
                   </div>
                 </li>
                 <li className="opcion-con-desplegable">
-                  <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(10)}>
-                    <Link to="/AddRecipients" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <FaPlusSquare className="mr-2" />
-                      <span>Add Recipients</span>
+                  <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(8)}>
+                    <Link to="/Endedurgentrequest" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <StopCircleSharp className="mr-2" />
+                      <span>Ended urgent request</span>
                     </Link>
                   </div>
                 </li>
-                <li className="opcion-con-desplegable">
-                  <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(11)}>
-                    <Link to="/ManageUsers" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <FaPlusSquare className="mr-2" />
-                      <span>Manage User</span>
-                    </Link>
-                  </div>
-                </li>
-                <li className="opcion-con-desplegable">
-                  <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(12)}>
-                    <Link to="/ManageStaffs" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <FaPeopleArrows className="mr-2" />
-                      <span>Manage staff</span>
-                    </Link>
-                  </div>
-                </li>
-                <li className="opcion-con-desplegable">
-                  <div className="flex items-center justify-between p-2 hover:bg-custom-green" onClick={() => toggleSubMenu(13)}>
-                    <Link to="/ManageRiders" className="flex items-center" style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <FaAmbulance className="mr-2" />
-                      <span>Manage rider</span>
-                    </Link>
 
-                  </div>
-                </li>
+                
               </ul>
             </nav>
           </aside>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import StaffNavbar from '../Staff/StaffNavbar';
-import DoctorSidebar from '../Staff/doctorsidebar';
+import DoctorSidebar from './DoctorSidebar';
 
 const ConfirmedAppointment = () => {
   const { appointmentId } = useParams();

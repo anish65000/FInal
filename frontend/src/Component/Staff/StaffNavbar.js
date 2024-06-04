@@ -22,9 +22,10 @@ const StaffNavbar = () => {
   };
 
   const handleLogout = () => {
-    // Call logout function when logout is clicked
-    logout();
-    navigate('/staff/login');
+    logout(); // Call the logout function from the context
+    // Clear the history stack by replacing the current entry and pushing a new state
+    window.history.replaceState(null, '', '/'); // Replace the current entry with the homepage
+    navigate('/staff/login'); // Navigate to the login page
   };
 
   const handleProfileClick = () => {
@@ -36,7 +37,7 @@ const StaffNavbar = () => {
       <div className="container mx-auto p-7 flex items-center justify-between">
         {/* Staff Home Page Link */}
         <div className="flex items-center ml-auto space-x-4">
-          <Link to="/staffhomepage" className="text-custom-green mr-4 font-bold">
+          <Link to="/" className="text-custom-green mr-4 font-bold">
             <FontAwesomeIcon icon={faHome} size="lg" />
             <span className="ml-2 font-normal font-['Elephant']">Home</span>
           </Link>
@@ -63,16 +64,13 @@ const StaffNavbar = () => {
                 <Link to="/Adddonor" className="block py-2 text-custom-green ">
                   ADD Donor
                 </Link>
-                <Link to="/view-donation-history" className="block py-2 text-custom-green ">
-                  View Donation History
-                </Link>
+              
                 <Link to="/donorstock" className="block py-2 text-custom-green ">
                   Manage Donor
                 </Link>
               </div>
             )}
           </div>
-
           {/* Recipient Management Icon */}
           <div className="relative cursor-pointer text-custom-green " onClick={toggleRecipientManagementDropdown}>
             <div className="flex items-center">
@@ -91,13 +89,11 @@ const StaffNavbar = () => {
               </div>
             )}
           </div>
-
           {/* Logout Icon */}
           <div className="relative cursor-pointer text-custom-green " onClick={handleLogout}>
             <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
             <span className="ml-2 font-normal font-['Elephant']">Logout</span>
           </div>
-
           {/* Profile Icon */}
           <div className="relative cursor-pointer text-custom-green " onClick={handleProfileClick}>
             <div className="flex items-center">
@@ -110,5 +106,4 @@ const StaffNavbar = () => {
     </nav>
   );
 };
-
 export default StaffNavbar;

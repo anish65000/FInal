@@ -1,17 +1,8 @@
 const authenticateToken = require('../authenticateToken');
-const WebSocket = require('ws'); // Import WebSocket library
+// const WebSocket = require('ws'); // Import WebSocket library
 
 module.exports = function ManageDonationController(app, db) {
-    // const wss = new WebSocket.Server({ port: 8090 }); // Create WebSocket server
-
-    // // WebSocket connection event
-    // wss.on('connection', (ws) => {
-    //     console.log('Client connected to WebSocket');
-
-    //     ws.on('close', () => {
-    //         console.log('Client disconnected from WebSocket');
-    //     });
-    // });
+  
 
     // Endpoint to get all donations
     app.get('/donations', authenticateToken, async (req, res) => {

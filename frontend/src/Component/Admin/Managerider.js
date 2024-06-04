@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import StaffSidebar from '../Staff/StaffSidebar';
+
 import StaffNavbar from '../Staff/StaffNavbar';
+import AdminSidebar from './AdminSidebar';
+
+import { Link } from 'react-router-dom';
+
+
+
 
 const RiderManagement = () => {
   const [riders, setRiders] = useState([]);
@@ -58,18 +64,11 @@ const RiderManagement = () => {
     }
   };
 
-  const handleRiderDelete = async (riderId) => {
-    try {
-      await axios.delete(`http://localhost:5000/rider/${riderId}`);
-      fetchRiders();
-    } catch (error) {
-      console.error('Error deleting rider:', error);
-    }
-  };
+
 
   return (
     <div className="home bg-pro-white flex flex-col flex-grow ">
-      <StaffSidebar />
+      <AdminSidebar />
       <div className="flex flex-col flex-grow">
         <StaffNavbar />
         <div className="container mx-auto p-4">
@@ -78,9 +77,13 @@ const RiderManagement = () => {
               MANAGE RIDER
             </h1>
             <div className="flex space-x-2">
+              <Link to="/register/rider" className="flex items-center text-gray">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Add Rider
+              
+              Add Rider
               </button>
+            </Link>
+                
         
             </div>
           </div>
@@ -129,12 +132,7 @@ const RiderManagement = () => {
                     >
                       Edit
                     </button>
-                    <button
-                      onClick={() => handleRiderDelete(rider.rider_id)}
-                      className="bg-red hover:bg-red-600 text-white px-4 py-2 rounded"
-                    >
-                      Delete
-                    </button>
+                  
                   </div>
                 </td>
               </tr>

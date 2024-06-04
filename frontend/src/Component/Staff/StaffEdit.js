@@ -10,7 +10,6 @@ const StaffEdit = () => {
     stfPhone: '',
     stfAddress: '',
     stfStaffType: '',
-    avatar: null,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -44,31 +43,22 @@ const StaffEdit = () => {
     });
   };
 
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      avatar: e.target.files[0],
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach((key) => {
-        formDataToSend.append(key, formData[key]);
-      });
       const response = await fetch('http://localhost:5000/updatestfprofile', {
         method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: formDataToSend,
+        body: JSON.stringify(formData),
       });
+      const responseData = await response.json();
       if (!response.ok) {
-        throw new Error('Failed to update staff profile');
+        throw new Error(responseData.error || 'Failed to update staff profile');
       }
       toast.success('Staff profile updated successfully');
       navigate('/staffprofile');
@@ -159,19 +149,6 @@ const StaffEdit = () => {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-custom-green focus:ring-custom-green sm:text-sm"
               />
             </div>
-            <div className="mb-4">
-              <label htmlFor="avatar" className="block text-sm font-medium text-gray-700">
-                Profile Picture
-              </label>
-              <input
-                type="file"
-                id="avatar"
-                name="avatar"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="mt-1 block w-full"
-              />
-            </div>
             <div className="flex justify-end">
               <button
                 type="button"
@@ -188,7 +165,7 @@ const StaffEdit = () => {
               </button>
             </div>
           </form>
-          {/* Toast container */}
+        
           <ToastContainer />
         </div>
       </div>

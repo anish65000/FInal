@@ -7,6 +7,8 @@ const PremiumDonorList = () => {
   const [premiumDonors, setPremiumDonors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const donorsPerPage = 2;
 
   useEffect(() => {
     const fetchPremiumDonors = async () => {
@@ -30,6 +32,12 @@ const PremiumDonorList = () => {
     fetchPremiumDonors();
   }, []); 
 
+  const indexOfLastDonor = currentPage * donorsPerPage;
+  const indexOfFirstDonor = indexOfLastDonor - donorsPerPage;
+  const currentDonors = premiumDonors.slice(indexOfFirstDonor, indexOfLastDonor);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -43,13 +51,14 @@ const PremiumDonorList = () => {
       <UserNavbar/>
       <div className="flex">
         <UserSidebar />
-        <div className="flex flex-col bg-white rounded-lg shadow-md p-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-800">Premium Donor List</h2>
+
+  <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow-md p-4">
+    <div className="flex items-center justify-between w-full">
+      <h2 className="text-xl font-bold text-gray-800">Premium Donor List</h2>
           </div>
-          <div className="mt-4">
-            {premiumDonors.map((donor) => (
-              <div key={donor.premium_donor_id} className="donor-item bg-light-green mb-6 p-4 rounded-lg shadow-md">
+          <div className="mt-4 w-full">
+            {currentDonors.map((donor) => (
+              <div key={donor.premium_donor_id} className="donor-item bg-light-green mb-6 p-4 rounded-lg shadow-md w-full">
                 <div className="grid grid-cols-3 gap-4">
                   <div className="donor-image-container">
                     <img
@@ -66,7 +75,7 @@ const PremiumDonorList = () => {
                     <div className="text-gray-700 font-bold">Blood Group</div>
                     <div>{donor.userBloodGroup}</div>
                     <div className="text-gray-700 font-bold">Availability</div>
-                    <div>{donor.availability_time}</div>
+                    <div>{donor.availability}</div>
                     <div className="text-gray-700 font-bold">Address</div>
                     <div>{donor.userAddress}</div>
                     <div className="text-gray-700 font-bold">Last Donation</div>
@@ -78,11 +87,15 @@ const PremiumDonorList = () => {
                     <button className='bg-pastel-green hover:bg-custom-green text-white font-bold py-2 px-4 rounded' type="button">View Profile</button>
                   </Link>
                   <div>
-                    {/* Add any other textual information related to donors here */}
+                    
                   </div>
                 </div>
               </div>
             ))}
+          </div>
+          <div className="flex justify-between mt-4 w-full">
+            <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
+            <button onClick={() => paginate(currentPage + 1)} disabled={currentDonors.length < donorsPerPage}>Next</button>
           </div>
         </div>
       </div>

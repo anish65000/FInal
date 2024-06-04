@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import UserNavbar from '../user/UserNavbar';
-import DoctorSidebar from './doctorsidebar';
+import DoctorSidebar from '../Doctor/DoctorSidebar';
+import StaffNavbar from './StaffNavbar';
 
 const BloodTestForm = () => {
     const [donorStockList, setDonorStockList] = useState([]);
@@ -76,7 +77,7 @@ const BloodTestForm = () => {
 
     return (
         <>
-            <UserNavbar />
+            <StaffNavbar/>
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-3">

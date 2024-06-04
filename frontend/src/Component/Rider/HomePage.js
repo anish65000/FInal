@@ -5,12 +5,12 @@ import RiderLogo from '../../Assest/img/RiderLogo.jpeg';
 import Rider3 from '../../Assest/img/Rider3.jpg';
 import Rider2 from '../../Assest/img/Rider1.jpeg';
 import Amb from '../../Assest/img/Amb.png'; // Import the Amb image
-import DonorNavbar from './DonorNavbar';
+import Navbar from './RiderNavbar';
 
 const RiderHomePage = () => {
   return (
     <>
-    <DonorNavbar/>
+    <Navbar/>
     <div className="bg-gradient-to-r from-red to-green min-h-screen">
       <header className="flex items-center justify-between py-6 px-4">
         <h1 className="text-3xl font-bold text-white">
@@ -29,11 +29,7 @@ const RiderHomePage = () => {
       <main className="container mx-auto px-4 py-8">
         <section className="flex flex-col md:flex-row gap-8 mb-8">
 
-        {/* <div className="w-1/2 p-4">
-                <h2 className="text-xl font-semibold mb-2">Staff Information</h2>
-                <p>Staff Name: {</p>
-                <p>Staff Type: </p>
-              </div> */}
+      
           <div className="w-full md:w-1/3">
             <img
               src={Rider1}
@@ -91,9 +87,6 @@ const RiderHomePage = () => {
 
         <section className="mb-8">
           <h2 className="text-2xl font-bold mb-4 text-white">Request Assistance</h2>
-          <form className="bg-white p-6 rounded shadow-md">
-            {/* ... Form elements remain the same ... */}
-          </form>
         </section>
         
         {/* Adding Amb image */}

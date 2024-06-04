@@ -1,9 +1,8 @@
 const authenticateToken = require('../authenticateToken');
-
 const RiderRideController = (app, db) => {
     // Endpoint to get ride requests
     app.get('/requested-rides', authenticateToken, async (req, res) => {
-        const riderId = req.user.userId; // Extract riderId directly from decoded JWT token in req.user
+        const riderId = req.user.userId; // Extract riderId 
 
         // Ensure riderId is present in the decoded token
         if (!riderId) {
@@ -23,9 +22,6 @@ const RiderRideController = (app, db) => {
         }
     });
    
-   
-
-
 }
 
 module.exports = RiderRideController;

@@ -71,16 +71,19 @@ const ManageStaffController = (app) => {
   app.delete('/staff/:staffId', async (req, res) => {
     try {
       const staffId = req.params.staffId;
-
+  
+      // First delete rows from referencing table
       await db.query('DELETE FROM stf_login WHERE staff_id = ?', [staffId]);
+  
+      // Then delete row from the stf_details table
       await db.query('DELETE FROM stf_details WHERE id = ?', [staffId]);
-
+  
       res.json({ message: 'Staff member deleted successfully' });
     } catch (error) {
       console.error('Error deleting staff member:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-};
+}  
 
 module.exports = ManageStaffController;

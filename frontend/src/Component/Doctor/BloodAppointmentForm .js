@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import StaffNavbar from '../Staff/StaffNavbar';
-import DoctorSidebar from '../Staff/doctorsidebar';
+import DoctorSidebar from './DoctorSidebar';
 
 const BloodDonationForm = () => {
   const location = useLocation();

@@ -45,7 +45,7 @@ const BloodCompatibilityChecker = () => {
               Check Blood Compatibility
             </h1>
             <br />
-            <div style={{ width: '50%', margin: '0 auto' }}> {/* Adjust the width as needed */}
+            <div style={{ width: '30%', margin: '0 auto' }}> {/* Adjust the width as needed */}
               <img
                 src={compability}
                 alt="Blood Donation"

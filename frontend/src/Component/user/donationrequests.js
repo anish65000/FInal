@@ -111,10 +111,10 @@ const DonationRequests = () => {
                   <div className="text-gray">
                     {request.status === 'pending' && <FaClock />}
                     {request.status === 'confirm' && (
-                      <FaCheck className="text-green-500" />
+                      <FaCheck className="text-green" />
                     )}
                     {request.status === 'denied' && (
-                      <FaTimes className="text-red-500" />
+                      <FaTimes className="text-red" />
                     )}
                   </div>
                 </div>

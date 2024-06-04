@@ -33,9 +33,24 @@ const BloodBankRiderRegisterController = (app, db) => {
         imagePath = avatar.path.replace("public\\profile-pictures\\", "");
       }
 
+      // Validate password length
+      if (password.length <= 6) {
+        return res.status(400).send({ message: "Password must be more than 6 characters" });
+      }
+
+      // Validate phone number length
+      if (phoneNumber.length !== 10) {
+        return res.status(400).send({ message: "Phone number must be exactly 10 digits" });
+      }
+
       const existingRider = await query('SELECT * FROM bloodbank_riders WHERE name = ?', [username]);
 
       if (existingRider.length > 0) {
+        return res.status(400).send({ message: "Rider username already exists" });
+      }
+
+      const existingRidername = await query('SELECT * FROM rider_login WHERE username = ?', [username]);
+      if ( existingRidername.length > 0) {
         return res.status(400).send({ message: "Rider username already exists" });
       }
 
@@ -62,18 +77,17 @@ const BloodBankRiderRegisterController = (app, db) => {
       } catch (err) {
         await connection.rollback();
         throw err;
-      } 
+      }
     } catch (error) {
       console.error("Error during blood bank rider registration:", error);
       res.status(500).send({ success: false, error: "Internal Server Error" });
     }
   });
 
-  
-app.get('/ride-request/:rideId', async (req, res) => {
-  const rideId = req.params.rideId; // Extract the ride ID from the request URL
+  app.get('/ride-request/:rideId', async (req, res) => {
+    const rideId = req.params.rideId; // Extract the ride ID from the request URL
 
-  try {
+    try {
       // Fetch ride request details from the database based on the ride ID
       const [rideRequest] = await db.promise().query(`
           SELECT * FROM ride_requests WHERE ride_id = ?
@@ -81,19 +95,17 @@ app.get('/ride-request/:rideId', async (req, res) => {
 
       // Check if ride request details were found
       if (rideRequest.length === 0) {
-          return res.status(404).json({ success: false, message: 'Ride request not found' });
+        return res.status(404).json({ success: false, message: 'Ride request not found' });
       }
 
       // Respond with ride request details
       res.status(200).json({ success: true, rideRequest: rideRequest[0] });
-  } catch (error) {
+    } catch (error) {
       // If any error occurs during the process, respond with an error message
       console.error('Error:', error);
       res.status(500).json({ success: false, message: 'Internal Server Error' });
-  }
-});
-
-
+    }
+  });
 }
 
 module.exports = BloodBankRiderRegisterController;

@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import StaffSidebar from '../Staff/StaffSidebar';
 import StaffNavbar from '../Staff/StaffNavbar';
+import AdminSidebar from './AdminSidebar';
 
 const ManageBloodBanks = () => {
   const [bloodBanks, setBloodBanks] = useState([]);
@@ -56,23 +57,12 @@ const ManageBloodBanks = () => {
     setEditingBloodBankId(id);
   };
 
-  const handleDeleteBloodBank = async (id) => {
-    try {
-      const response = await axios.delete(`http://localhost:5000/bloodbank/${id}`);
-      console.log('Blood bank deleted successfully:', response.data);
-      setBloodBanks(prevBloodBanks => prevBloodBanks.filter(bloodBank => bloodBank.id !== id));
-      toast.success('Blood bank deleted successfully');
-    } catch (error) {
-      console.error('Error deleting blood bank:', error);
-      toast.error('An error occurred while deleting blood bank');
-    }
-  };
 
 
   return (
     
        <div className="home bg-pro-white flex flex-col flex-grow ">
-      <StaffSidebar />
+      <AdminSidebar/>
       <div className="flex flex-col flex-grow">
         <StaffNavbar />
         <div className="container mx-auto p-4">
@@ -175,9 +165,7 @@ const ManageBloodBanks = () => {
                       <button className="text-blue-600 mr-2" onClick={() => handleEditBloodBank(bloodBank.id)}>
                         Edit
                       </button>
-                      <button className="text-red-600" onClick={() => handleDeleteBloodBank(bloodBank.id)}>
-                        Delete
-                      </button>
+                     
                     </>
                   )}
                 </td>

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'; // Import for navigation
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Rider from '../../Assest/img/Riderblood.png';
+import Navbar from '.././Navbar'; 
 import { useRider } from './RiderContext'; // Import useRider hook from RiderContext
 
 const RiderLogin = () => {
@@ -22,11 +23,11 @@ const RiderLogin = () => {
     e.preventDefault();
     try {
       const res = await axios.post('http://localhost:5000/rider/login', formData);
-      const { token, riderName, bloodType } = res.data;
+      const { token, riderName} = res.data;
       localStorage.setItem('token', token); // Store token in localStorage
       localStorage.setItem('riderName', riderName); // Store rider name
-      localStorage.setItem('bloodType', bloodType); // Store blood type
-      login(riderName, bloodType); // Use login function from RiderContext
+    
+      login(riderName); // Use login function from RiderContext
       toast.success('Login Successful'); // Show success toast
       navigate('/riderhomepage'); // Redirect to /riderhomepage
     } catch (error) {
@@ -35,7 +36,11 @@ const RiderLogin = () => {
     }
   };
   return (
+    <>
+    <Navbar/>
+   
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      
       <div className="w-full max-w-md shadow-md rounded px-8 py-8 bg-white">
         <ToastContainer />
         <div className="mb-6 text-center">
@@ -56,12 +61,13 @@ const RiderLogin = () => {
           </div>
         </form>
         <div className="flex justify-between my-4">
-            <a href="/register/rider" className="text-sm text-blue-600 hover:underline">
+            {/* <a href="/register/rider" className="text-sm text-blue-600 hover:underline">
               Click here if you don't have an account
-            </a>
+            </a> */}
           </div>
       </div>
     </div>
+    </>
   );
 };
 

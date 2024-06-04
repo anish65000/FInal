@@ -1,4 +1,4 @@
-const authenticateToken = require('../authenticateToken');
+ const authenticateToken = require('../authenticateToken');
 const WebSocket = require('ws');
 
 const DonorNotification = (app, db, wss) => {
@@ -24,7 +24,7 @@ const DonorNotification = (app, db, wss) => {
           SELECT 
               dr.user_id, 
               dr.message,
-              ud.userName
+              dr.recipient_name
           FROM 
               donor_requests dr
               JOIN
@@ -35,7 +35,7 @@ const DonorNotification = (app, db, wss) => {
           WHERE 
               dr.donor_id = ?`, [userId]);
 
-      res.json(notifications); // Send notifications as JSON response
+      res.json(notifications);
 
     } catch (error) {
       console.error('Error:', error);
@@ -43,18 +43,14 @@ const DonorNotification = (app, db, wss) => {
     }
   });
 
-  // Endpoint to get the status of a donation by ID
   app.get('/donation/status', authenticateToken, async (req, res) => {
-    // Ensure req.user is defined after authentication middleware
     if (!req.user || !req.user.userId) {
-        console.log("User ID missing in token:", req.user); // Log req.user for debugging
         return res.status(401).json({ message: "Unauthorized: Missing user ID in token" });
     }
 
     const userId = req.user.userId;
 
     try {
-        // Fetch the status of the donation along with the username
         const [donationDetails] = await db.promise().query(`
             SELECT 
                 bd.status, 
@@ -71,10 +67,8 @@ const DonorNotification = (app, db, wss) => {
 
         const { status, userName } = donationDetails[0];
 
-        // If status changed to "approved", send notification to donor via WebSocket
         if (status === 'approved') {
             const message = 'Your blood donation is accepted!';
-            // Send notification message to WebSocket client (donor)
             wss.clients.forEach((client) => {
                 client.send(JSON.stringify({ recipient: userName, message }));
             });
@@ -85,8 +79,80 @@ const DonorNotification = (app, db, wss) => {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-});
+  });
 
+  app.get('/urgentrequest', authenticateToken, async (req, res) => {
+    if (!req.user || !req.user.userId) {
+        return res.status(401).json({ message: "Unauthorized: Missing user ID in token" });
+    }
+
+    const userId = req.user.userId;
+
+    try {
+        const [urgentRequest] = await db.promise().query(`
+            SELECT 
+                ur.message,
+                ur.location,
+                ur.Recipent_name
+            FROM 
+                urgent_requests ur
+                JOIN
+                premium_donors pd ON ur.donor_id = pd.premium_donor_id 
+            JOIN 
+                user_details ud ON pd.user_id = ud.id
+                
+            WHERE 
+                ur.donor_id = ?`, [userId]);
+            
+
+        if (urgentRequest.length === 0) {
+            return res.status(404).json({ message: 'Urgent request not found' });
+        }
+
+        const { message, location, Recipent_name } = urgentRequest[0];
+        
+        // Send urgent request details to WebSocket client
+        wss.clients.forEach((client) => {
+            client.send(JSON.stringify({ type: 'urgentRequest', recipient: Recipent_name, message, location }));
+        });
+
+        res.status(200).json({ message: 'Urgent request sent' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+
+  app.get('/confirmed-appointments', authenticateToken, async (req, res) => {
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ message: "Unauthorized: Missing user ID in token" });
+    }
+  
+    const userId = req.user.userId;
+  
+    try {
+      const [appointments] = await db.promise().query(`
+          SELECT 
+              cr.slot_time
+          FROM 
+              confirmedappointments cr
+              JOIN user_details ud ON cr.user_id = ud.id
+          WHERE 
+              cr.user_id = ?`, [userId]);
+  
+      if (appointments.length === 0) {
+        return res.status(404).json({ message: 'No confirmed appointments found' });
+      }
+  
+      const { slot_time } = appointments[0];
+  
+      res.status(200).json({ slot_time });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+  
 };
 
 module.exports = DonorNotification;

@@ -8,11 +8,12 @@ const DonationRequestController = (db) => {
     const userId = req.user.userId;
 
     const query = `
-      SELECT dr.*
-      FROM donor_requests dr
-      JOIN premium_donors pd ON dr.donor_id = pd.user_id
-      JOIN user_details ud ON pd.user_id = ud.id
-      WHERE ud.id = ?;
+    SELECT dr.*, ud.*
+    FROM donor_requests dr
+    JOIN premium_donors pd ON dr.donor_id = pd.premium_donor_id
+    JOIN user_details ud ON pd.user_id = ud.id
+    WHERE ud.id = ?;
+    
     `;
 
     db.query(query, [userId], (error, results) => {
@@ -33,11 +34,12 @@ const DonationRequestController = (db) => {
     }
 
     const updateQuery = `
-      UPDATE donor_requests dr
-      JOIN premium_donors pd ON dr.donor_id = pd.user_id
-      JOIN user_details ud ON pd.user_id = ud.id
-      SET dr.status = ?
-      WHERE ud.id = ?;
+    UPDATE donor_requests dr
+    JOIN premium_donors pd ON dr.donor_id = pd.premium_donor_id
+    JOIN user_details ud ON pd.user_id = ud.id
+    SET dr.status = ?
+    WHERE ud.id = ?;
+    
     `;
 
     db.query(updateQuery, [status, userId], (error, result) => {

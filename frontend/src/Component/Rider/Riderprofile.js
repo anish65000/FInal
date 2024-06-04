@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard, faEnvelope, faPhone, faTint, faMotorcycle, faIdBadge } from '@fortawesome/free-solid-svg-icons';
-import DonorNavbar from './DonorNavbar';
+import Navbar from './RiderNavbar';
 
 const RiderProfile = () => {
   const [riderProfile, setRiderProfile] = useState(null);
@@ -44,11 +44,13 @@ const RiderProfile = () => {
   }
 
   return (
-    <div className="">
-        <DonorNavbar/>
+    <> <Navbar />
+   
+     
       <h1 className="text-3xl font-bold mb-6 text-center py-8 px-4">Rider Profile</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+      <div className="flex flex-col items-center h-screen">
+      <div className="grid grid-cols-1 md:grid-cols-2 ">
+        <div className="bg-green rounded-lg shadow-md p-6 flex flex-col items-cente r">
           <img
             src={`http://localhost:5000/profile-pictures/${riderProfile.avatar}`}
             alt={`${riderProfile.name}'s profile`}
@@ -60,8 +62,8 @@ const RiderProfile = () => {
           <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Edit Profile
           </button>
-        
-        <div className="bg-white rounded-lg shadow-md p-6">
+        </div>
+        <div className="bg-green rounded-lg shadow-md p-6">
           <p className="text-lg font-semibold mb-4">Basic Information</p>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -75,7 +77,7 @@ const RiderProfile = () => {
                 <FontAwesomeIcon icon={faPhone} className="mr-2 text-blue-500" /> Phone: {riderProfile.phone_number}
               </p>
             </div>
-            
+            <div>
               <p className="flex items-center">
                 <FontAwesomeIcon icon={faTint} className="mr-2 text-blue-500" /> Blood Type: {riderProfile.blood_type}
               </p>
@@ -90,6 +92,7 @@ const RiderProfile = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

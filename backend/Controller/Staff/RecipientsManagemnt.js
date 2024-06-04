@@ -39,23 +39,38 @@ const RecipientInventoryController = (app, db) => {
     app.post("/login/stf/rs/insert", (req, res) => {
       try {
         const { recipient_name, blood_group, email, age, address, phone } = req.body;
-  
+    
         if (!recipient_name || !blood_group || !email || !age || !address || !phone) {
           return res.status(400).send({ message: "All fields are required." });
         }
-  
-        const sqlInsert = "INSERT INTO recipient_inventory (recipient_name, blood_group, email, age, address, phone) VALUES (?, ?, ?, ?, ?, ?);";
-  
-        db.query(sqlInsert, [recipient_name, blood_group, email, age, address, phone], (err, result) => {
+    
+        // Check if the email already exists
+        const checkEmailQuery = "SELECT * FROM recipient_inventory WHERE email = ?";
+        db.query(checkEmailQuery, [email], (err, result) => {
           if (err) {
-            console.error('Error in inserting recipient stock:', err);
+            console.error('Error in checking email:', err);
             res.status(500).send("Internal Server Error");
-          } else {
-            const recipientId = result.insertId;
-            console.log('Recipient stock inserted successfully with ID:', recipientId);
-  
-            res.json({ message: 'Recipient stock inserted successfully', recipientId });
+            return;
           }
+    
+          if (result.length > 0) {
+            // Email already exists
+            res.status(409).send({ message: "Email already exists." });
+            return;
+          }
+    
+          // Email doesn't exist, proceed with insertion
+          const sqlInsert = "INSERT INTO recipient_inventory (recipient_name, blood_group, email, age, address, phone) VALUES (?, ?, ?, ?, ?, ?);";
+          db.query(sqlInsert, [recipient_name, blood_group, email, age, address, phone], (err, result) => {
+            if (err) {
+              console.error('Error in inserting recipient stock:', err);
+              res.status(500).send("Internal Server Error");
+            } else {
+              const recipientId = result.insertId;
+              console.log('Recipient stock inserted successfully with ID:', recipientId);
+              res.json({ message: 'Recipient stock inserted successfully', recipientId });
+            }
+          });
         });
       } catch (error) {
         console.error("Error during recipient stock insertion:", error);

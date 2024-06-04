@@ -26,37 +26,38 @@ function UrgentRequestDetail() {
   if (!urgentRequest) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <div className="animate-pulse">
-            <div className="h-4 bg-gray-200 rounded mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded mb-2"></div>
-          </div>
-        </div>
+        
       </div>
     );
   }
-
-  const { message, userName, userPhone, requested_at, required_by_time, donor_id, user_id } = urgentRequest;
-
+  const { message, Recipent_name,location, userPhone, requested_at, required_by_time, donor_id, user_id } = urgentRequest;
   return (
     <>
       <StaffNavbar />
       <StaffSidebar />
-      <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+      <div className="max-w-4xl mx-auto p-6 bg-green shadow-md rounded-lg">
         <h1 className="text-3xl font-bold mb-6">Urgent Request Details</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="mb-4">
-            <h2 className={`text-xl font-bold mb-2 ${required_by_time < new Date() ? 'text-red-500' : ''}`}>
+            <h2 className={`text-xl font-bold mb-2 ${required_by_time < new Date() ? 'text-red' : ''}`}>
               Request Details
             </h2>
             <div className="mb-4">
               <span className="font-bold">Message:</span>
-              <p className="text-gray-700">{message}</p>
+              <p className="text-gray">{message}</p>
             </div>
             <div className="mb-4">
               <span className="font-bold">User Name:</span>
-              <p className="text-gray-700">{userName}</p>
+              <p className="text-gray">{Recipent_name}</p>
+            </div>
+            <div className="mb-4">
+              <span className="font-bold">Location:</span>
+              <p className="text-gray">{location}</p>
+            </div>
+
+            <div className="mb-4">
+              <span className="font-bold">Location:</span>
+              <p className="text-gray">{location}</p>
             </div>
             <div className="mb-4">
               <span className="font-bold">User Phone:</span>

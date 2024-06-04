@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const RiderContext = createContext();
 
+
 const initialState = {
   isLoggedIn: false,
-  riderType: null,
   riderName: null,
   riderData: {},
   isLoading: false,
@@ -18,7 +18,6 @@ const riderReducer = (state, action) => {
       return {
         ...state,
         isLoggedIn: true,
-        riderType: action.riderType || null,
         riderName: action.riderName || null,
         riderData: action.riderData || {},
         isLoading: false,
@@ -40,24 +39,24 @@ export const RiderProvider = ({ children }) => {
 
   useEffect(() => {
     // Initialize state from local storage
-    const token = localStorage.getItem('token');
     const riderName = localStorage.getItem('riderName');
-    const riderType = localStorage.getItem('riderType');
-    if (token && riderName && riderType) {
-      dispatch({ type: 'LOGIN', riderType, riderName });
+    
+    if (riderName ) {
+      dispatch({ type: 'LOGIN', riderName });
     }
   }, []);
 
-  const login = (riderType, riderName, riderData) => {
-    dispatch({ type: 'LOGIN', riderType, riderName, riderData });
+  const login = ( riderName, riderData) => {
+    dispatch({ type: 'LOGIN', riderName, riderData });
+    localStorage.setItem('riderName', riderName);
+  
   };
 
   const logout = () => {
     dispatch({ type: 'LOGOUT' });
     // Clear local storage upon logout
-    localStorage.removeItem('token');
     localStorage.removeItem('riderName');
-    localStorage.removeItem('riderType');
+    localStorage.removeItem('token')
   };
 
   const setLoading = (isLoading) => {

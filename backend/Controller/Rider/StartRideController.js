@@ -1,5 +1,3 @@
-
-
 const startRideController = (app, db, authenticateToken) => {
   // Endpoint to start the ride
   app.post('/start-ride/:donorId', authenticateToken, async (req, res) => {
@@ -93,6 +91,28 @@ const startRideController = (app, db, authenticateToken) => {
       res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
   });
+
+  app.get('/ride-status/:donorId', authenticateToken, async (req, res) => {
+    const donorId = req.params.donorId;
+
+    try {
+      const [rides] = await db.promise().query(`
+        SELECT status
+        FROM ride_requests
+        WHERE donor_id = ?
+      `, [donorId]);
+
+      if (rides.length === 0) {
+        return res.status(404).json({ success: false, message: 'Ride not found' });
+      }
+
+      res.status(200).json({ success: true, status: rides[0].status });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+  });
+
 };
 
 module.exports = startRideController;

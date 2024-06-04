@@ -1,15 +1,23 @@
-// backend/RiderNotification.js
+
 const authenticateToken = require('../../authenticateToken');
 const WebSocket = require('ws');
 
-const RiderNotification = (app, db, wss) => {
-  const broadcastNewRequest = (data) => {
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(data));
-      }
+const RiderNotification = (app, db,wss) => {
+   // Create WebSocket server
+
+  wss.on('connection', ws => {
+    console.log('WebSocket connected');
+
+    ws.send(JSON.stringify({ type: 'connected' }));
+
+    ws.on('message', message => {
+      console.log('Received message:', message);
     });
-  };
+
+    ws.on('close', () => {
+      console.log('WebSocket disconnected');
+    });
+  });
 
   app.get('/rider-notifications', authenticateToken, async (req, res) => {
     const riderId = req.user.userId;
@@ -17,10 +25,10 @@ const RiderNotification = (app, db, wss) => {
       const [notifications] = await db.promise().query(
         `
         SELECT
-          rr.rider_id,
-          rr.destination
-        FROM ride_requests rr
-        WHERE rr.rider_id = ?
+        recipient_name,
+          destination
+        FROM ride_requests 
+        WHERE rider_id = ?
         `,
         [riderId]
       );
@@ -32,7 +40,7 @@ const RiderNotification = (app, db, wss) => {
       notifications.forEach((notification) => {
         res.write(
           JSON.stringify({
-            riderId: notification.rider_id,
+            recipient_name: notification.recipient_name,
             destination: notification.destination,
           })
         );
@@ -42,33 +50,20 @@ const RiderNotification = (app, db, wss) => {
         const data = {
           type: 'new-request',
           data: {
-            riderId: notification.rider_id,
+            recipient_name: notification.recipient_name,
             destination: notification.destination,
           },
         };
-        broadcastNewRequest(data);
+        wss.clients.forEach(client => {
+          client.send(JSON.stringify(data)); // Broadcast new request notification to all connected clients
+        });
       });
 
-      req.on('close', () => {
-        // Handle client closing connection if needed
-      });
+      res.end(); // End the response
     } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
-  });
-
-  wss.on('connection', (ws) => {
-    console.log('WebSocket connected');
-    ws.send(JSON.stringify({ type: 'connected' }));
-
-    ws.on('message', (message) => {
-      console.log('Received message:', message);
-    });
-
-    ws.on('close', () => {
-      console.log('WebSocket disconnected');
-    });
   });
 };
 

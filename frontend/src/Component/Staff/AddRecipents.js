@@ -1,9 +1,30 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Navbar from './StaffNavbar';
-import Sidebar from './StaffSidebar';
+import StaffSidebar from './StaffSidebar';
+import DoctorSidebar from '../Doctor/DoctorSidebar';
+import { useStaff } from './StaffContext';
+import AdminSidebar from '../Admin/AdminSidebar';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddRecipient = () => {
+  const { state } = useStaff();
+  const {  stfStaffType } = state;
+
+  const getSidebarComponent = () => {
+    switch (stfStaffType) {
+      case 'Doctor':
+        return <DoctorSidebar />;
+      case 'Staff':
+        return <StaffSidebar />;
+      case 'Admin':
+        return <AdminSidebar/>;
+      default:
+        return null;
+    }
+  };
   const [newRecipient, setNewRecipient] = useState({
     recipient_name: '',
     blood_group: '',
@@ -23,20 +44,25 @@ const AddRecipient = () => {
     axios
       .post('http://localhost:5000/login/stf/rs/insert', newRecipient)
       .then((response) => {
-        console.log('Recipient added successfully:', response.data);
-        // Optionally, you can redirect the user or display a success message here
+        toast.success('Recipient added successfully!');
+        // Optionally, you can reset the form fields or perform additional actions here
       })
-      .catch((error) => console.error('Error adding recipient:', error));
+      .catch((error) => {
+        if (error.response && error.response.status === 409) {
+          toast.error('Email already exists. user already present in the sytem');
+        } else {
+          toast.error('Error adding recipient:', error);
+        }
+      });
   };
+  
 
   return (
     <>
       <Navbar />
-      
       <div className="flex "></div>
-      <Sidebar/>
+      {getSidebarComponent()}
       <div className="flex justify-center items-center h-screen ">
-        
         <div className="bg-pastel-green rounded-lg shadow-lg p-8 w-full max-w-2xl">
           <h1 className="text-4xl font-bold mb-6 text-center">Add Recipient</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -135,6 +161,7 @@ const AddRecipient = () => {
           </form>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };

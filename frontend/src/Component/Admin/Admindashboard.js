@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DashboardChart from './DashboardChart';
+import AdminSidebar from './AdminSidebar';
+import StaffNavbar from '../Staff/StaffNavbar';
 
 const Dashboard = () => {
   const [staffCount, setStaffCount] = useState(0);
@@ -31,8 +33,14 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="grid grid-cols-1 gap-4">
+    <div className="bg-gray-100 min-h-screen pt-8 pb-12 px-4">
+      <div className="home bg-pro-white flex flex-col flex-grow ">
+      <AdminSidebar />
+      <div className="flex flex-col flex-grow">
+        <StaffNavbar />
+        <div className="container mx-auto p-4">
+          <div className="flex items-center justify-between mb-4"></div>
+      <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center"></h2>
         <DashboardChart />
         <div className="grid grid-cols-4 gap-4">
           <div className="bg-blue-500 text-white p-4 rounded shadow">
@@ -53,6 +61,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+    </div>   </div>
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import StaffNavbar from './StaffNavbar';
 import StaffSidebar from './StaffSidebar';
 
@@ -14,7 +15,6 @@ function RideRequestForm() {
   const [riders, setRiders] = useState([]);
   const [donorDetails, setDonorDetails] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchRiders = async () => {
@@ -32,7 +32,7 @@ function RideRequestForm() {
       try {
         const response = await axios.get(`http://localhost:5000/urgentrequests/${requestId}`);
         const requestData = response.data;
-        setDestination(requestData.urgentRequest.location); // Set destination to location value
+        setDestination(requestData.urgentRequest.location);
       } catch (error) {
         console.error('Error fetching ride request data:', error);
       }
@@ -46,13 +46,12 @@ function RideRequestForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
       const response = await axios.post(
         'http://localhost:5000/requestride',
         {
-          riderId: selectedRider, // Changed to riderId
+          riderId: selectedRider,
           destination,
           requestId,
         },
@@ -65,9 +64,14 @@ function RideRequestForm() {
 
       console.log(response.data);
       setDonorDetails(response.data.donorDetails);
+      toast.success('Ride request created successfully');
     } catch (error) {
       console.error('Error posting ride request:', error);
-      setError('Error posting ride request. Please try again.');
+      if (error.response && error.response.status === 409) {
+        toast.error(`Conflict: ${error.response.data.message}`);
+      } else {
+        toast.error('Error posting ride request. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -76,7 +80,7 @@ function RideRequestForm() {
   return (
     <>
       <StaffNavbar />
-      <StaffSidebar/>
+      <StaffSidebar />
       <div className="flex justify-center items-center h-full">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
@@ -120,10 +124,10 @@ function RideRequestForm() {
             >
               {loading ? 'Requesting Ride...' : 'Request Ride'}
             </button>
-            {error && <p className="text-red-500 mt-2">{error}</p>}
           </form>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

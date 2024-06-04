@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Navbar from '../UserNavbar';
-import Donorsidebar from './Donorsidebar'; // Assuming you have a Sidebar component
+import Donorsidebar from './Donorsidebar';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BloodDonationFeedbackForm = ({ onSubmit }) => {
   const [stfId, setStfId] = useState('');
@@ -19,29 +21,29 @@ const BloodDonationFeedbackForm = ({ onSubmit }) => {
       const data = await response.json();
 
       if (data.message === 'Feedback submitted successfully') {
-        // Handle successful submission (e.g., clear form, show success message)
+        // Handle successful submission
         setStfId('');
         setFeedback('');
-        console.log('Feedback submitted!');
+        toast.success('Feedback submitted successfully');
       } else {
-        // Handle errors (e.g., display error message)
-        console.error(data.message);
+        // Handle errors
+        toast.error(data.message);
       }
     } catch (error) {
       console.error(error);
-      // Handle network or other errors
+      toast.error('An error occurred while submitting feedback');
     }
   };
 
   return (
     <>
       <Navbar />
+      <ToastContainer /> {/* ToastContainer for displaying notifications */}
       <div className="flex">
-        <Donorsidebar  />
+        <Donorsidebar />
         <div className="container mx-auto">
           <div className="main-body">
             <div className="flex flex-wrap justify-center">
-              {/* Left column for profile */}
               <div className="w-full md:w-2/4 px-2 pt-8 ">
                 <div className="card bg-white-gray py-2 px-4 shadow-md rounded-md h-[700px]">
                   <form onSubmit={handleSubmit} className="flex flex-col space-y-2">

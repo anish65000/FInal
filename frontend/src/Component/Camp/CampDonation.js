@@ -10,6 +10,7 @@ const CampForm = () => {
   const { campId } = useParams();
   const [formData, setFormData] = useState({
     camp_id: '',
+    campName: '',
     donorName: '',
     bloodGroup: '',
     donationDate: '',
@@ -23,19 +24,19 @@ const CampForm = () => {
       try {
         const response = await axios.get(`http://localhost:5000/camps/${campId}`);
         setCamp(response.data);
-  
+        
         // Extracting date without "t" and "z"
         const cleanedDate = response.data.date.substring(0, 10);
   
         setFormData({
           ...formData,
           camp_id: response.data.campId,
-          donorName: '',
-          bloodGroup: '',
+          campName: response.data.name,
           donationDate: cleanedDate,
-          donationTime: '',
-          bloodUnit: '',
         });
+        
+       
+        
       } catch (error) {
         console.error('Error fetching camp:', error);
       }
@@ -106,6 +107,39 @@ const CampForm = () => {
           </div>
 
           <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="campName">
+              Camp Name
+            </label>
+            <input
+              type="text"
+              id="campName"
+              name="campName"
+              value={formData.campName}
+              onChange={handleChange}
+              className="border rounded-md py-2 px-3 w-full"
+              placeholder="Enter Camp Name"
+              required
+              readOnly
+            />
+          </div>
+        
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="donationDate">
+              Donation Date
+            </label>
+            <input
+              type="text"
+              id="donationDate"
+              name="donationDate"
+              value={formData.donationDate}
+              onChange={handleChange}
+              className="border rounded-md py-2 px-3 w-full"
+              required
+              readOnly
+            />
+          </div>
+
+          <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="donorName">
               Donor Name
             </label>
@@ -125,31 +159,24 @@ const CampForm = () => {
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bloodGroup">
               Blood Group
             </label>
-            <input
-              type="text"
+            <select
               id="bloodGroup"
               name="bloodGroup"
               value={formData.bloodGroup}
               onChange={handleChange}
               className="border rounded-md py-2 px-3 w-full"
-              placeholder="Enter Blood Group"
               required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="donationDate">
-              Donation Date
-            </label>
-            <input
-              type="text"
-              id="donationDate"
-              name="donationDate"
-              value={formData.donationDate}
-              onChange={handleChange}
-              className="border rounded-md py-2 px-3 w-full"
-              required
-            />
+            >
+              <option value="" disabled>Select Blood Group</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
           </div>
 
           <div className="mb-4">
@@ -197,7 +224,9 @@ const CampForm = () => {
       )}
 
       <ToastContainer />
-    </div> </div> </div>
+    </div>
+    </div>
+    </div>
   );
 };
 

@@ -4,6 +4,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Rider from '../../Assest/img/Riderblood.png';
 
+import StaffNavbar from '../Staff/StaffNavbar';
+import AdminSidebar from '../Admin/AdminSidebar';
+
+
+
 const BloodBankRiderRegistration = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -31,17 +36,9 @@ const BloodBankRiderRegistration = () => {
     e.preventDefault();
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('phoneNumber', formData.phoneNumber);
-      formDataToSend.append('bloodType', formData.bloodType);
-      formDataToSend.append('bikeModel', formData.bikeModel);
-      formDataToSend.append('licenseNumber', formData.licenseNumber);
-      formDataToSend.append('username', formData.username);
-      formDataToSend.append('password', formData.password);
-      formDataToSend.append('avatar', formData.avatar);
-      formDataToSend.append('gender', formData.gender);
-      formDataToSend.append('age', formData.age);
+      for (const key in formData) {
+        formDataToSend.append(key, formData[key]);
+      }
 
       const res = await axios.post('http://localhost:5000/reg/bloodbank-rider', formDataToSend);
       console.log(res.data);
@@ -49,12 +46,19 @@ const BloodBankRiderRegistration = () => {
       // You can handle success response here
     } catch (error) {
       console.error('Error during blood bank rider registration:', error);
-      toast.error('Error during blood bank rider registration'); // Show error toast
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(`Error: ${error.response.data.message}`); // Show specific error message from the server
+      } else {
+        toast.error('Error during blood bank rider registration'); // Show generic error message
+      }
       // Handle error here
     }
   };
 
   return (
+    <>
+    <StaffNavbar />
+      <AdminSidebar />
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="w-full max-w-md shadow-md rounded px-8 py-8 bg-lightblue">
         <ToastContainer />
@@ -77,7 +81,17 @@ const BloodBankRiderRegistration = () => {
           </div>
           <div>
             <label htmlFor="bloodType" className="form-label text-gray-700">Blood Type</label>
-            <input type="text" className="form-control border border-gray-300 rounded px-3 py-2" id="bloodType" name="bloodType" onChange={handleChange} />
+            <select className="form-select border border-gray-300 rounded px-3 py-2" id="bloodType" name="bloodType" onChange={handleChange}>
+              <option value="">Select Blood Type</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
           </div>
           <div>
             <label htmlFor="bikeModel" className="form-label text-gray-700">Bike Model</label>
@@ -118,6 +132,7 @@ const BloodBankRiderRegistration = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 

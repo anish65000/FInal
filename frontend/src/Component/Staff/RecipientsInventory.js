@@ -2,8 +2,28 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './StaffNavbar';
 import StaffSidebar from './StaffSidebar';
+import DoctorSidebar from '../Doctor/DoctorSidebar';
+import { useStaff } from './StaffContext';
+import AdminSidebar from '../Admin/AdminSidebar';
+
 
 const RecipientsComponent = () => {
+
+  const { state } = useStaff();
+  const {  stfStaffType } = state;
+
+  const getSidebarComponent = () => {
+    switch (stfStaffType) {
+      case 'Doctor':
+        return <DoctorSidebar />;
+      case 'Staff':
+        return <StaffSidebar />;
+      case 'Admin':
+        return <AdminSidebar/>;
+      default:
+        return null;
+    }
+  };
   const [recipientStockList, setRecipientStockList] = useState([]);
   const [newRecipientStock, setNewRecipientStock] = useState({
     recipient_name: '',
@@ -13,8 +33,9 @@ const RecipientsComponent = () => {
     address: '',
     phone: ''
   });
-
   const [editingRecipientStockId, setEditingRecipientStockId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipientsPerPage = 10;
 
   useEffect(() => {
     axios.get('http://localhost:5000/login/stf/rs')
@@ -25,10 +46,7 @@ const RecipientsComponent = () => {
   }, []);
 
   const handleUpdateRecipientStock = (id, updatedRecipientStock) => {
-    axios.put('http://localhost:5000/login/stf/rs/update', {
-      recipient_id: id,
-      ...updatedRecipientStock
-    })
+    axios.put(`http://localhost:5000/login/stf/rs/update/${id}`, updatedRecipientStock)
       .then(response => {
         console.log('Recipient stock updated successfully:', response.data);
         axios.get('http://localhost:5000/login/stf/rs')
@@ -71,10 +89,16 @@ const RecipientsComponent = () => {
       .catch(error => console.error('Error deleting recipient stock:', error));
   };
 
+  const indexOfLastRecipient = currentPage * recipientsPerPage;
+  const indexOfFirstRecipient = indexOfLastRecipient - recipientsPerPage;
+  const currentRecipients = recipientStockList.slice(indexOfFirstRecipient, indexOfLastRecipient);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <>
       <Navbar />
-      <StaffSidebar />
+      {getSidebarComponent()}
       <div className="container mx-auto p-4 text-lg flex justify-center">
         <div className="w-full lg:w-4/5 xl:w-3/4">
           <h1 className="text-4xl font-bold mb-4">Recipient Stock Management</h1>
@@ -93,7 +117,7 @@ const RecipientsComponent = () => {
                 </tr>
               </thead>
               <tbody>
-                {recipientStockList.map((recipientStock, index) => (
+                {currentRecipients.map((recipientStock, index) => (
                   <tr key={recipientStock.id || index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                     <td className="px-6 py-4">
                       {editingRecipientStockId === recipientStock.id ? (
@@ -173,24 +197,39 @@ const RecipientsComponent = () => {
                           Save
                         </button>
                       ) : (
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1
-                        3 rounded" onClick={() => handleEditRecipientStock(recipientStock.id)}>
-                        Edit
-                        </button>
-                        )}
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded ml-2" onClick={() => handleDeleteRecipientStock(recipientStock.id)}>
-                        Delete
-                        </button>
-                        </td>
-                        </tr>
-                        ))}
-                        </tbody>
-                        </table>
-                        </div>
-                        </div>
-                        </div>
+                        <>
+                          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded" onClick={() => handleEditRecipientStock(recipientStock.id)}>
+                            Edit
+                          </button>
+                          <br/>
+                          <button className="bg-red hover:bg-yellow text-white font-bold py-1 px-3 rounded ml-2" onClick={() => handleDeleteRecipientStock(recipientStock.id)}>
+                            Delete
+                          </button>
                         </>
-                        );
-                        };
-                        
-                        export default RecipientsComponent;
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center mt-4">
+            {Array.from({ length: Math.ceil(recipientStockList.length / recipientsPerPage) }, (_, i) => (
+              <button
+                key={i + 1}
+                className={`px-3 py-1 mx-1 rounded ${currentPage === i + 1 ? 'bg-green-500 text-white' : 'bg-gray-300'}`}
+                onClick={() => paginate(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default RecipientsComponent;

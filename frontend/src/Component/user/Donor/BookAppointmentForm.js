@@ -6,32 +6,57 @@ import UserNavbar from '../UserNavbar';
 import DonorSidebar from './Donorsidebar';
 
 const BookBloodAppointmentForm = () => {
-  const [staffId, setStaffId] = useState('');
+  const [staffName, setStaffName] = useState('');
   const [userName, setUserName] = useState('');
   const [slotTime, setSlotTime] = useState('');
   const [availableSlots, setAvailableSlots] = useState([]);
+  const [staffNames, setStaffNames] = useState([]);
+
+  useEffect(() => {
+    const fetchStaffNames = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/staffnames');
+        setStaffNames(response.data);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch staff names");
+      }
+    };
+    fetchStaffNames();
+  }, []);
 
   useEffect(() => {
     const fetchAvailableSlots = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/availableslots');
+        const response = await axios.get('http://localhost:5000/availableslots', {
+          params: { staff_name: staffName }
+        });
         setAvailableSlots(response.data);
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch available slots");
       }
     };
-    fetchAvailableSlots();
-  }, []);
+    if (staffName) {
+      fetchAvailableSlots();
+    }
+  }, [staffName]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const selectedSlot = availableSlots.find(slot => slot.slot_time === slotTime);
+
+    if (!selectedSlot) {
+      toast.error('Sorry, this slot is not available.');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:5000/book-appointment', {
-        stf_id: staffId,
+        stf_id: selectedSlot.stf_id,
         user_name: userName,
-        slot_time: slotTime,
+        slot_time: selectedSlot.slot_time,
       }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -55,18 +80,23 @@ const BookBloodAppointmentForm = () => {
             <ToastContainer />
             <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
               <div className="mb-4">
-                <label htmlFor="staffId" className="block text-gray-700 font-bold mb-2">
-                  Staff ID
+                <label htmlFor="staffName" className="block text-gray-700 font-bold mb-2">
+                  Staff Name
                 </label>
-                <input
-                  type="text"
-                  id="staffId"
-                  value={staffId}
-                  onChange={(e) => setStaffId(e.target.value)}
+                <select
+                  id="staffName"
+                  value={staffName}
+                  onChange={(e) => setStaffName(e.target.value)}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Enter staff ID"
                   required
-                />
+                >
+                  <option value="">Select Staff Name</option>
+                  {staffNames.map((staff) => (
+                    <option key={staff.staff_name} value={staff.staff_name}>
+                      {staff.staff_name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="mb-4">
                 <label htmlFor="userName" className="block text-gray-700 font-bold mb-2">
@@ -95,7 +125,7 @@ const BookBloodAppointmentForm = () => {
                 >
                   <option value="">Select Slot Time</option>
                   {availableSlots.map((slot) => (
-                    <option key={slot.id} value={slot.id}>
+                    <option key={slot.id} value={slot.slot_time}>
                       {slot.slot_time}
                     </option>
                   ))}

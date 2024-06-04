@@ -1,17 +1,68 @@
 const RiderController = (app, db) => {
     
-app.get('/urgentrequests', async (req, res) => {
-    try {
-        // Fetch urgent requests with user details (userName and userPhone)
-        const [urgentRequests] = await db.promise().query('SELECT ur.*, ud.userName, ud.userPhone FROM urgent_requests ur INNER JOIN premium_donors pd ON ur.donor_id = pd.premium_donor_id JOIN user_details ud ON pd.user_id = ud.id ');
+    app.get('/urgentrequests', async (req, res) => {
+        try {
+            // Fetch urgent requests with user details (userName and userPhone) 
+            
+            const [urgentRequests] = await db.promise().query(`
+            SELECT ur.*, ud.userName, ud.userPhone
+            FROM urgent_requests ur
+            INNER JOIN premium_donors pd ON ur.donor_id = pd.premium_donor_id
+            JOIN user_details ud ON pd.user_id = ud.id
+            LEFT JOIN ride_requests rr ON ur.id = rr.request_id
+            WHERE rr.status = '' OR rr.status IS NULL
+            
+            `);
+    
+            // Sending the fetched urgent requests in the response
+            res.status(200).json({ success: true, urgentRequests });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    });
 
-        // Sending the fetched urgent requests in the response
-        res.status(200).json({ success: true, urgentRequests });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
-    }
-});
+    app.get('/ended/urgentrequests', async (req, res) => {
+        try {
+            // Fetch urgent requests with user details (userName and userPhone) 
+            // and where the associated ride request has a status of 'ended'
+            const [urgentRequests] = await db.promise().query(`
+                SELECT ur.*, ud.userName, ud.userPhone
+                FROM urgent_requests ur
+                INNER JOIN premium_donors pd ON ur.donor_id = pd.premium_donor_id
+                JOIN user_details ud ON pd.user_id = ud.id
+                LEFT JOIN ride_requests rr ON ur.id = rr.request_id AND rr.status = 'ended'
+                WHERE rr.request_id IS NOT NULL
+            `);
+    
+            // Sending the fetched urgent requests in the response
+            res.status(200).json({ success: true, urgentRequests });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    });
+    
+
+// app.get('/urgentrequests/:id', async (req, res) => {
+//     try {
+//         const requestId = req.params.id;
+
+//         // Fetch urgent request with useyyyyyyyyyyyyr details (userName and userPhone) by ID
+//         const [urgentRequest] = await db.promise().query('SELECT ur.*, ud.userName, ud.userPhone, rr.status FROM urgent_requests ur JOIN ride_requests rr on ur.id = rr.id join user_details ud ON ur.user_id = ud.id  WHERE ur.id = ?', [requestId]);
+
+//         if (urgentRequest.length === 0) {
+//             // If no urgent request found with the given ID
+//             return res.status(404).json({ success: false, message: 'Urgent request not found' });
+//         }
+
+//         // Sending the fetched urgent request in the response
+//         res.status(200).json({ success: true, urgentRequest: urgentRequest[0] });
+//     } catch (error) {
+//         console.error('Error:', error);
+//         res.status(500).json({ success: false, message: 'Internal Server Error' });
+//     }
+// });
 
 app.get('/urgentrequests/:id', async (req, res) => {
     try {

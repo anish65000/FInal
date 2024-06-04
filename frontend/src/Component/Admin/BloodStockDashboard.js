@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import StaffSidebar from '../Staff/StaffSidebar';
 import StaffNavbar from '../Staff/StaffNavbar';
+import AdminSidebar from './AdminSidebar';
 
 const BloodInventoryDashboard = () => {
   const [bloodInventory, setBloodInventory] = useState([]);
@@ -18,7 +19,7 @@ const BloodInventoryDashboard = () => {
     'A+': 'bg-pastel-green text-gray',
     'A-': 'bg-blood text-gray',
     'B+': 'bg-yellow text-gray',
-    'B-': 'bg-yellowX text-gray', // Assuming a custom class for yellowX
+    'B-': 'bg-yellowX text-gray',
     'AB+': 'bg-purple text-gray',
     'AB-': 'bg-custom-orange text-gray',
     'O+': 'bg-bermuda text-gray',
@@ -33,7 +34,7 @@ const BloodInventoryDashboard = () => {
     
     <div className="bg-gray-100 min-h-screen pt-8 pb-12 px-4">
       <div className="home bg-pro-white flex flex-col flex-grow ">
-      <StaffSidebar />
+      <AdminSidebar />
       <div className="flex flex-col flex-grow">
         <StaffNavbar />
         <div className="container mx-auto p-4">

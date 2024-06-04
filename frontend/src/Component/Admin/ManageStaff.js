@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import StaffSidebar from '../Staff/StaffSidebar';
+import Navbar from './AdminSidebar';
 import StaffNavbar from '../Staff/StaffNavbar';
 
 const StaffManagement = () => {
@@ -8,6 +8,8 @@ const StaffManagement = () => {
   const [editingStaff, setEditingStaff] = useState(null);
   const [updatedStaffData, setUpdatedStaffData] = useState({});
   const [avatarFile, setAvatarFile] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
 
   useEffect(() => {
     fetchStaff();
@@ -21,6 +23,12 @@ const StaffManagement = () => {
       console.error('Error fetching staff members:', error);
     }
   };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = staff.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleEditStaff = (staffId) => {
     const selectedStaff = staff.find((item) => item.id === staffId);
@@ -48,6 +56,8 @@ const StaffManagement = () => {
       formData.append('stfPhone', updatedStaffData.stfPhone);
       formData.append('stfAddress', updatedStaffData.stfAddress);
       formData.append('stfStaffType', updatedStaffData.stfStaffType);
+   
+      
 
       await axios.put(`http://localhost:5000/staff/edit/${editingStaff.id}`, formData);
       setEditingStaff(null);
@@ -69,9 +79,9 @@ const StaffManagement = () => {
 
   return (
     <div className="home bg-pro-white flex flex-col flex-grow ">
-      <StaffSidebar />
+      <StaffNavbar />
       <div className="flex flex-col flex-grow">
-        <StaffNavbar />
+        <Navbar />
         <div className="container mx-auto p-4">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-3xl font-bold text-custom-green hover:text-green-900">
@@ -81,7 +91,6 @@ const StaffManagement = () => {
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Add Staff
               </button>
-        
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -98,7 +107,7 @@ const StaffManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {staff.map((item) =>
+                {currentItems.map((item) =>
                   editingStaff?.id === item.id ? (
                     <tr key={item.id} className="bg-gray-100">
                       <td className="px-4 py-2">
@@ -188,6 +197,18 @@ const StaffManagement = () => {
               </tbody>
             </table>
           </div>
+          {/* Pagination */}
+          <nav>
+            <ul className="pagination">
+              {Array.from({ length: Math.ceil(staff.length / itemsPerPage) }).map((_, index) => (
+                <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
+                  <button className="page-link" onClick={() => paginate(index + 1)}>
+                    {index + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
       </div>
     </div>

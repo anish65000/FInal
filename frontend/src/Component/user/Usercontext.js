@@ -54,12 +54,10 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const storedUserData = localStorage.getItem('userData');
-  
     if (storedUserData) {
       try {
         const parsedUserData = JSON.parse(storedUserData);
         const { userRole, username } = parsedUserData;
-  
         // Pass the parsedUserData to login to ensure authentication data is correctly set
         login(userRole, username, parsedUserData);
       } catch (error) {
@@ -70,7 +68,6 @@ export const UserProvider = ({ children }) => {
       }
     }
   }, []);
-  
 
   const login = (userRole, username, userData) => {
     localStorage.setItem('userData', JSON.stringify(userData));
@@ -80,8 +77,8 @@ export const UserProvider = ({ children }) => {
   const logout = () => {
     dispatch({ type: 'LOGOUT' });
     localStorage.removeItem('userData');
-    // Optionally, redirect to login page
-    // window.location.href = '/user/login';
+    localStorage.removeItem('token'); // Remove the token from localStorage
+    window.location.href = '/user/login';
   };
 
   const setLoading = (isLoading) => {
@@ -92,8 +89,15 @@ export const UserProvider = ({ children }) => {
     dispatch({ type: 'SET_ERROR', error });
   };
 
+  const isTokenValid = () => {
+    const token = localStorage.getItem('token');
+    return !!token; // Returns true if token exists, false otherwise
+  };
+
   return (
-    <UserContext.Provider value={{ state, login, logout, setLoading, setError }}>
+    <UserContext.Provider
+      value={{ state, login, logout, setLoading, setError, isTokenValid }}
+    >
       {children}
     </UserContext.Provider>
   );
@@ -101,10 +105,8 @@ export const UserProvider = ({ children }) => {
 
 export const useUser = () => {
   const context = useContext(UserContext);
-
   if (!context) {
     throw new Error('useUser must be used within a UserProvider');
   }
-
   return context;
 };

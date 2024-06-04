@@ -188,9 +188,7 @@ function StaffRegistration() {
     <option value="Admin">Admin</option>
   </select>
 </div>
-
-
-            <div className="mb-4">
+ <div className="mb-4">
               <button
                 type="submit"
                 className="w-full bg-green hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

@@ -73,7 +73,6 @@ const DonorInventoryController = (app, db) => {
   });
   
 
-  
   // Delete donor stocks
   app.delete("/login/stf/ds/delete/:id", (req, res) => {
     const donor_id = req.params.id;
@@ -88,8 +87,7 @@ const DonorInventoryController = (app, db) => {
       }
     });
   });
-
-    // Test blood endpoint
+   
 // Test blood endpoint
 app.post("/login/stf/ds/test-blood/:id", (req, res) => {
   const { donorId, generalHealth, disqualifyingMedications, recentTravel, recentTattoos, recentSexualActivity, drugUse } = req.body;

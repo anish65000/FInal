@@ -2,18 +2,33 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './StaffNavbar';
 import StaffSidebar from './StaffSidebar';
+import DoctorSidebar from '../Doctor/DoctorSidebar';
+import { useStaff } from './StaffContext';
+import AdminSidebar from '../Admin/AdminSidebar';
 
 const DonorStockComponent = () => {
-  const [donorStockList, setDonorStockList] = useState([]);
-  const [newDonorStock, setNewDonorStock] = useState({
-    blood_group: '',
-    unit: 0,
-    age: 0,
-    address: '',
-    donor_name: '',
-  });
 
+  const { state } = useStaff();
+  const {  stfStaffType } = state;
+
+  const getSidebarComponent = () => {
+    switch (stfStaffType) {
+      case 'Doctor':
+        return <DoctorSidebar />;
+      case 'Staff':
+        return <StaffSidebar />;
+      case 'Admin':
+        return <AdminSidebar/>;
+      default:
+        return null;
+    }
+  };
+
+
+  const [donorStockList, setDonorStockList] = useState([]);
   const [editingDonorStockId, setEditingDonorStockId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const donorsPerPage = 10; // Update the value to 10
 
   useEffect(() => {
     axios.get('http://localhost:5000/login/stf/ds')
@@ -44,6 +59,11 @@ const DonorStockComponent = () => {
           .then(response => {
             setDonorStockList(response.data);
             setEditingDonorStockId(null);
+            const newDonorStockListLength = response.data.length;
+            const totalPages = Math.ceil(newDonorStockListLength / donorsPerPage);
+            if (currentPage > totalPages) {
+              setCurrentPage(totalPages);
+            }
           })
           .catch(error => console.error('Error fetching updated donor stock data:', error));
       })
@@ -54,35 +74,30 @@ const DonorStockComponent = () => {
     setEditingDonorStockId(id);
   };
 
-  const handleInsertDonorStock = () => {
-    if (newDonorStock.unit === 0 || newDonorStock.age === 0) {
-      alert('Unit and Age must be greater than 0.');
-      return;
-    }
-
-    setDonorStockList(prevList => [...prevList, newDonorStock]);
-    setNewDonorStock({
-      blood_group: '',
-      unit: 0,
-      age: 0,
-      address: '',
-      donor_name: '',
-    });
-  };
-
   const handleDeleteDonorStock = id => {
     axios.delete(`http://localhost:5000/login/stf/ds/delete/${id}`)
       .then(response => {
         console.log('Donor stock deleted successfully:', response.data);
-        setDonorStockList(prevList => prevList.filter(item => item.id !== id));
+        const newDonorStockList = donorStockList.filter(item => item.id !== id);
+        setDonorStockList(newDonorStockList);
+        const totalPages = Math.ceil(newDonorStockList.length / donorsPerPage);
+        if (currentPage > totalPages) {
+          setCurrentPage(totalPages);
+        }
       })
       .catch(error => console.error('Error deleting donor stock:', error));
   };
 
+  const indexOfLastDonor = currentPage * donorsPerPage;
+  const indexOfFirstDonor = indexOfLastDonor - donorsPerPage;
+  const currentDonors = donorStockList.slice(indexOfFirstDonor, indexOfLastDonor);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <>
       <Navbar />
-      <StaffSidebar />
+      {getSidebarComponent()}
       <div className="container mx-auto p-4 text-lg">
         <h1 className="text-4xl font-bold mb-4">Donor Stock Management</h1>
         <div className="overflow-x-auto">
@@ -97,11 +112,10 @@ const DonorStockComponent = () => {
               </tr>
             </thead>
             <tbody>
-              {donorStockList.map((donorStock, index) => (
+              {currentDonors.map((donorStock, index) => (
                 <React.Fragment key={donorStock.id || index}>
                   <tr>
                     <td className="text-center">{donorStock.donor_name}</td>
-                   
                     <td className="text-center">
                       {editingDonorStockId === donorStock.id ? (
                         <input
@@ -139,7 +153,6 @@ const DonorStockComponent = () => {
                           <button className="text-blue-600 mr-2" onClick={() => handleEditDonorStock(donorStock.id)}>
                             Edit
                           </button>
-                          &nbsp;
                           <button className="text-red-600" onClick={() => handleDeleteDonorStock(donorStock.id)}>
                             Delete
                           </button>
@@ -148,13 +161,28 @@ const DonorStockComponent = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td colSpan="7" className="border-b border-gray-300"></td>
+                    <td colSpan="5" className="border-b border-gray-300"></td>
                   </tr>
                 </React.Fragment>
               ))}
             </tbody>
           </table>
         </div>
+      </div>
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
+        {Array.from({ length: Math.ceil(donorStockList.length / donorsPerPage) }, (_, i) => {
+          const pageNumber = i + 1;
+          return (
+            <button
+              key={pageNumber}
+              className={`px-3 py-1 mx-1 rounded ${currentPage === pageNumber ? 'bg-green text-white' : 'bg-green'}`}
+              onClick={() => paginate(pageNumber)}
+            >
+              {pageNumber}
+            </button>
+          );
+        })}
       </div>
     </>
   );

@@ -1,8 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaMoneyBillWave } from "react-icons/fa";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faBars, faLifeRing } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../Usercontext";
 import { Home, Person2, Logout, Inventory, SupervisorAccount } from "@mui/icons-material";
 
@@ -10,11 +8,7 @@ const DonorSidebar = () => {
   const navigate = useNavigate();
   const { logout, state: { isLoggedIn, userRole, username } } = useUser();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/user/login');
-  };
-
+ 
   return (
     <aside className="bg-pastel-green text-gray min-h-screen p-4">
       <nav>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import StaffNavbar from './StaffNavbar';
 
 const StaffProfile = () => {
   const [staffProfile, setStaffProfile] = useState(null);
@@ -45,14 +46,12 @@ const StaffProfile = () => {
 
   return (
     <>
+    <StaffNavbar/>
       <div className="flex">
         <div className="px-6 flex flex-col items-center justify-between">
           <div className="flex items-center justify-between mb-4 pt-4">
             <h2 className="text-xl text-center font-bold font-['Elephant'] text-custom-green">STAFF PROFILE</h2>
-            {/* Add Link to navigate to the edit page */}
-            <Link to="/staffedit" className="text-custom-green font-semibold hover:underline">
-              Edit Profile
-            </Link>
+            
           </div>
 
           <div className="grid grid-cols-8 bg-nav-gray gap-10">
@@ -77,6 +76,9 @@ const StaffProfile = () => {
               <p>Address: {staffProfile.stfAddress}</p>
               <p>Staff Type: {staffProfile.stfStaffType}</p>
             </div>
+            <Link to="/staffedit" className="text-custom-green font-semibold hover:underline">
+              Edit Profile
+            </Link>
           </div>
 
           {/* Include ToastContainer to display toasts */}

@@ -63,6 +63,11 @@ const CampsList = () => {
     setEditCamp(null);
   };
 
+  const formatDateString = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
   return (
     <div className="flex h-screen">
       <StaffSidebar />
@@ -163,7 +168,7 @@ const CampsList = () => {
                   <div className="p-6">
                     <h2 className="text-2xl font-bold text-indigo-700 mb-2">Camp Name: {camp.name}</h2>
                     <div className="mb-2">
-                      <span className="font-bold">Date:</span> {camp.date}
+                      <span className="font-bold">Date:</span> {formatDateString(camp.date)}
                     </div>
                     <div className="mb-2">
                       <span className="font-bold">Address:</span> {camp.address}

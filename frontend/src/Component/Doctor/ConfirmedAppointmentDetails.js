@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import StaffNavbar from '../Staff/StaffNavbar';
-import DoctorSidebar from '../Staff/doctorsidebar';
+import DoctorSidebar from './DoctorSidebar';
 
 const ConfirmedAppointmentList = () => {
   const [confirmedAppointments, setConfirmedAppointments] = useState([]);

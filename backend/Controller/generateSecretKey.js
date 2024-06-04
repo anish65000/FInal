@@ -8,3 +8,6 @@ const secretKey = crypto.randomBytes(32).toString('hex');
 fs.writeFileSync('.env', `JWT_SECRET=${secretKey}\n`);
 
 console.log('Generated Secret Key:', secretKey);
+
+
+

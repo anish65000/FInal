@@ -8,7 +8,10 @@ const PremiumDonorProfile = () => {
   const [forbiddenAccess, setForbiddenAccess] = useState(false);
   const [error, setError] = useState(null);
   const [availability, setAvailability] = useState("");
-  const [isEditMode, setIsEditMode] = useState(false); // State for edit mode
+  const [longitude, setLongitude] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [isEditLocationMode, setIsEditLocationMode] = useState(false);
 
   useEffect(() => {
     const fetchPremiumDonorDetails = async () => {
@@ -20,7 +23,9 @@ const PremiumDonorProfile = () => {
           },
         });
         setPremiumDonor(response.data.premium_donor);
-        setAvailability(response.data.premium_donor.availability); // Set availability from fetched data
+        setAvailability(response.data.premium_donor.availability);
+        setLongitude(response.data.premium_donor.longitude);
+        setLatitude(response.data.premium_donor.latitude);
       } catch (error) {
         if (error.response && error.response.status === 403) {
           setForbiddenAccess(true);
@@ -39,17 +44,34 @@ const PremiumDonorProfile = () => {
       const token = localStorage.getItem("token");
       await axios.patch(
         "http://localhost:5000/premiumdonors",
-        { availability: availability },
+        { availability },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setIsEditMode(false); // Exit edit mode after successful update
-      // Optionally, you can update the premium donor details here as well
+      setIsEditMode(false);
     } catch (error) {
       console.error("Error updating availability:", error);
+    }
+  };
+
+  const handleLocationChange = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.patch(
+        "http://localhost:5000/premiumdonors/location",
+        { longitude, latitude },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsEditLocationMode(false);
+    } catch (error) {
+      console.error("Error updating location:", error);
     }
   };
 
@@ -64,7 +86,6 @@ const PremiumDonorProfile = () => {
   if (!premiumDonor) {
     return <div>Loading...</div>;
   }
-
 
   return (
     <>
@@ -208,7 +229,7 @@ const PremiumDonorProfile = () => {
                         htmlFor="address"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        previous_dontaion
+                        Previous Donation
                       </label>
                       <textarea
                         value={premiumDonor.previous_dontaion}
@@ -232,7 +253,7 @@ const PremiumDonorProfile = () => {
                           className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green"
                         >
                           <option value="available">Available</option>
-                          <option value="not_available">NotAvailable</option>
+                          <option value="not_available">Not Available</option>
                         </select>
                       ) : (
                         <textarea
@@ -242,7 +263,6 @@ const PremiumDonorProfile = () => {
                           disabled
                         />
                       )}
-                      {/* Render edit button only when not in edit mode */}
                       {!isEditMode && (
                         <button
                           onClick={() => setIsEditMode(true)}
@@ -251,7 +271,6 @@ const PremiumDonorProfile = () => {
                           Edit Availability
                         </button>
                       )}
-                      {/* Render save button only when in edit mode */}
                       {isEditMode && (
                         <button
                           onClick={handleAvailabilityChange}
@@ -261,6 +280,57 @@ const PremiumDonorProfile = () => {
                         </button>
                       )}
                     </div>
+
+                    <div className="mb-4">
+                      <label
+                        htmlFor="location"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Location
+                      </label>
+                      {isEditLocationMode ? (
+                        <div>
+                          <input
+                            type="text"
+                            value={longitude}
+                            onChange={(e) => setLongitude(e.target.value)}
+                            placeholder="Longitude"
+                            className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green"
+                          />
+                          <input
+                            type="text"
+                            value={latitude}
+                            onChange={(e) => setLatitude(e.target.value)}
+                            placeholder="Latitude"
+                            className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green"
+                          />
+                        </div>
+                      ) : (
+                        <textarea
+                          value={`Longitude: ${longitude}, Latitude: ${latitude}`}
+                          className="mt-1 p-2 w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-pastel-green disabled"
+                          rows="3"
+                          disabled
+                        />
+                      )}
+                      {!isEditLocationMode && (
+                        <button
+                          onClick={() => setIsEditLocationMode(true)}
+                          className="mt-2 bg-pastel-green hover:bg-light-green text-white font-bold py-2 px-4 rounded"
+                        >
+                          Edit Location
+                        </button>
+                      )}
+                      {isEditLocationMode && (
+                        <button
+                          onClick={handleLocationChange}
+                          className="mt-2 bg-pastel-green hover:bg-light-green text-white font-bold py-2 px-4 rounded"
+                        >
+                          Save
+                        </button>
+                      )}
+                    </div>
+
                   </div>
                 </div>
               </div>

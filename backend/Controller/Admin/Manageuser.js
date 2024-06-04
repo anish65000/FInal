@@ -11,18 +11,39 @@ const db = mysql.createConnection({
 
 const ManageUserController = (app) => {
   // Endpoint to get all users
-  app.get('/users', authenticateToken, async (req, res) => {
+  app.get('/users', async (req, res) => {
     try {
-      // Ensure req.user is defined after authentication middleware
-      if (!req.user || !req.user.userId) {
-        console.log("STF ID missing in token:", req.user);
-        // Log req.user for debugging
-        return res.status(401).json({ message: "Unauthorized: M       issing STF ID in token" });
-      }
+      
 
       // Fetch all users from the database
       const [users] = await db.query('SELECT * FROM user_details');
       res.json({ users });
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
+  app.get('/admin/users', async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10; // Default limit is 10 if not provided
+      const offset = (page - 1) * limit;
+  
+      const query = 'SELECT * FROM user_details LIMIT ? OFFSET ?';
+      const queryParams = [limit, offset];
+  
+      const countQuery = 'SELECT COUNT(*) as totalCount FROM user_details';
+  
+      // Fetch paginated users from the database
+      const [users] = await db.query(query, queryParams);
+  
+      // Get the total count of users
+      const [totalCount] = await db.query(countQuery);
+  
+      const totalPages = Math.ceil(totalCount[0].totalCount / limit);
+  
+      res.json({ users, totalPages, currentPage: page });
     } catch (error) {
       console.error('Error fetching users:', error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -62,5 +83,6 @@ const ManageUserController = (app) => {
     }
   });
 }  
+
 
 module.exports = ManageUserController;

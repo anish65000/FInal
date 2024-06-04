@@ -54,31 +54,42 @@ const StaffProfilerController = (app, connection) => {
     }
   });
 
-  // Endpoint to update user profile (requires authentication and Multer for file upload)
+
   app.put('/updatestfprofile', authenticateToken, upload.single('avatar'), async (req, res) => {
     try {
       // Handle file upload using Multer
-      if (!req.file) {
-        return res.status(400).send({ error: 'No file uploaded' });
-      }
-      // Fetch user ID from authentication token
       const userId = req.user.userId;
       // Fetch other user profile details from request body
       const { stfName, stfMail, stfPhone, stfAddress, stfStaffType } = req.body;
       // Process the uploaded file (if needed)
       
-      const updatedProfile = await query(connection, 'UPDATE stf_details SET stfName=?, stfMail=?, stfPhone=?, stfAddress=?, stfStaffType=?, avatar=? WHERE id=?', [stfName, stfMail, stfPhone, stfAddress, stfStaffType, req.file.filename, userId]);
+      // Update staff profile details in the database
+      const sqlUpdateStfProfile = `
+        UPDATE stf_details
+        SET stfName=?, stfMail=?, stfPhone=?, stfAddress=?, stfStaffType=?
+        WHERE id=?
+      `;
+      const params = [
+        stfName,
+        stfMail,
+        stfPhone,
+        stfAddress,
+        stfStaffType,
+        
+        userId
+      ];
+      const updatedProfile = await query(connection, sqlUpdateStfProfile, params);
+  
       if (updatedProfile.affectedRows === 0) {
-        return res.status(404).send({ error: 'User profile not found' });
+        return res.status(404).json({ error: 'User profile not found' });
       }
       // Return success response
-      res.status(200).send({ message: 'Profile updated successfully' });
+      res.status(200).json({ message: 'Profile updated successfully' });
     } catch (error) {
       console.error('Error updating user profile:', error);
-      res.status(500).send({ error: 'Internal Server Error' });
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-
-};
+}  
 
 module.exports = StaffProfilerController;

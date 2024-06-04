@@ -1,10 +1,10 @@
 // AboutUs.js
 
 import React from 'react';
-import Aboutus  from './../Assest/img/AboutUs.png';
-import Aboutus1  from './../Assest/img/AboutUs1.png';
-import Navbar from './Navbar';
-import Footer from './Footer';
+import Aboutus  from '../../Assest/img/AboutUs.png';
+import Aboutus1  from '../../Assest/img/AboutUs1.png';
+import Navbar from '../Navbar';
+import Footer from '../Footer';
 
 const AboutUs = () => {
   return (
@@ -35,9 +35,9 @@ const AboutUs = () => {
  
       <div className="container mx-6 py-4 text-xl">
 
-      <section className="mission bg-red-600 text-white p-8">
+      <section className="mission bg-green text-white p-8">
   <h2 className="text-6xl my-4 text-blood underline font-bold mb-8">Mission:</h2>
-  <p className="italic text-xl mb-4 font-bold">"To bridge the gap between those in need and the life-saving gift of blood, ensuring a reliable and swift supply for every patient in their time of crisis."</p>
+  <p className="italic text-xl mb-4  textfont-bold">"To bridge the gap between those in need and the life-saving gift of blood, ensuring a reliable and swift supply for every patient in their time of crisis."</p>
   <p className="italic text-xl mb-4 font-bold">"Committed to saving lives, we strive to make a lasting impact on healthcare by providing a continuous and accessible supply of blood to those in need."</p>
   <p className="italic text-xl mb-4 font-bold">"Empowering communities through the gift of blood, fostering a culture of compassion and support during medical emergencies."</p>
   <p className="italic text-xl mb-4 font-bold">"Driving innovation in healthcare by leveraging technology and collaboration to ensure efficient blood management and distribution."</p>

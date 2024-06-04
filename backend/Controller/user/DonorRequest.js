@@ -30,11 +30,10 @@ const DonorController = (app, db) => {
       res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
   });
-
   app.post('/api/urgentrequest/:donorId', authenticateToken, async (req, res) => {
     const donorId = req.params.donorId;
     const userId = req.user.userId;
-    const Recipient_name = req.user.userFullName; // Corrected typo in variable name
+    const Recipient_name = req.user.userFullName; 
     const { message, timeRequiredInMinutes, location } = req.body;
 
     try {
@@ -62,7 +61,7 @@ const DonorController = (app, db) => {
             return res.status(400).json({ success: false, message: 'You have already requested blood from this donor' });
         }
 
-        await db.promise().query('INSERT INTO urgent_requests (donor_id, user_id, requested_at, required_by_time, Recipient_name, message, location) VALUES (?, ?, NOW(), ?, ?, ?, ?)', [donorId, userId, requiredByTime, Recipient_name, message, location]);
+        await db.promise().query('INSERT INTO urgent_requests (donor_id, user_id, requested_at, required_by_time, Recipent_name, message, location) VALUES (?, ?, NOW(), ?, ?, ?, ?)', [donorId, userId, requiredByTime, Recipient_name, message, location]);
 
         const responseObj = { success: true, message: 'Blood request sent successfully', requiredByTime: requiredByTime.toISOString().replace('Z', '') };
 
@@ -72,6 +71,7 @@ const DonorController = (app, db) => {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
+
 
   
   

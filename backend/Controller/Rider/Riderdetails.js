@@ -1,5 +1,4 @@
 const BloodBankAllRidersController = (app, db) => {
-
   app.get("/bloodbank-rider/:id", async (req, res) => {
     try {
       const riderId = req.params.id;
@@ -21,7 +20,6 @@ const BloodBankAllRidersController = (app, db) => {
       res.status(500).send({ success: false, error: "Internal Server Error" });
     }
   });
-
   // Route to get all rider details
   app.get("/bloodbank-riders", async (req, res) => {
     try {

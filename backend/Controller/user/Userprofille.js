@@ -3,8 +3,9 @@ const authenticateToken = require('../authenticateToken');
 const upload = require('../Staff/multerConfig');
 const multer = require('multer');
 const path = require('path');
+
 const UserProfilerController = (app, connection) => {
-  // Helper function to run SQL queries using callback-based approach
+  // Helper function to run SQL queries using a callback-based approach
   const query = (connection, sql, params) => {
     return new Promise((resolve, reject) => {
       connection.query(sql, params, (error, results, fields) => {
@@ -37,42 +38,41 @@ const UserProfilerController = (app, connection) => {
     }
   });
 
-  // Put endpoint to edit user profile
+  // PUT endpoint to edit user profile
   app.put('/profile', authenticateToken, async (req, res) => {
     try {
-        const userId = req.user.userId; // Accessing user ID from authenticated token
-        const { userProfile } = req.body; // Accessing updated user profile from request body
+      const userId = req.user.userId; // Accessing user ID from authenticated token
+      const { userProfile } = req.body; // Accessing updated user profile from request body
 
-        // Update user profile details in the database
-        const sqlUpdateUserProfile = `
-            UPDATE user_details
-            SET userName = ?, userAge = ?, userGender = ?, userBloodGroup = ?, userPhone = ?, userEmail = ?, userAddress = ?, userRole = ?
-            WHERE id = ?
-        `;
-        const params = [
-            userProfile.userName,
-            userProfile.userAge,
-            userProfile.userGender,
-            userProfile.userBloodGroup,
-            userProfile.userPhone,
-            userProfile.userEmail,
-            userProfile.userAddress,
-            userProfile.userRole,
-            userId
-        ];
-        await query(connection, sqlUpdateUserProfile, params);
+      // Update user profile details in the database
+      const sqlUpdateUserProfile = `
+        UPDATE user_details
+        SET userName = ?, userAge = ?, userGender = ?, userBloodGroup = ?, userPhone = ?, userEmail = ?, userAddress = ?, userRole = ?
+        WHERE id = ?
+      `;
+      const params = [
+        userProfile.userName,
+        userProfile.userAge,
+        userProfile.userGender,
+        userProfile.userBloodGroup,
+        userProfile.userPhone,
+        userProfile.userEmail,
+        userProfile.userAddress,
+        userProfile.userRole,
+        userId
+      ];
+      await query(connection, sqlUpdateUserProfile, params);
 
-        // Fetch updated user profile from the database
-        const updatedUserProfile = await query(connection, 'SELECT * FROM user_details WHERE id = ?', [userId]);
+      // Fetch updated user profile from the database
+      const updatedUserProfile = await query(connection, 'SELECT * FROM user_details WHERE id = ?', [userId]);
 
-        // Send the updated user profile details in the response
-        res.status(200).send({ userProfile: updatedUserProfile });
+      // Send the updated user profile details in the response
+      res.status(200).send({ userProfile: updatedUserProfile });
     } catch (error) {
-        console.error('Error updating user profile:', error);
-        res.status(500).send({ error: 'Internal Server Error' });
+      console.error('Error updating user profile:', error);
+      res.status(500).send({ error: 'Internal Server Error' });
     }
-});
-
+  });
 
   // Endpoint to fetch premium donors
   app.get('/premiumdonors', authenticateToken, async (req, res) => {
@@ -115,32 +115,68 @@ const UserProfilerController = (app, connection) => {
     }
   });
 
-// Endpoint to update premium donor details by user_id
+  // Endpoint to update premium donor availability, longitude, and latitude by user_id
+  app.patch('/premiumdonors', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Accessing user ID from authenticated token
+    const { availability, longitude, latitude } = req.body; // Updated availability, longitude, and latitude sent in the request body
 
+    try {
+      // Check if the requester is authorized to edit the premium donor
+      const sqlUpdatePremiumDonor = `
+        UPDATE premium_donors
+        SET  longitude = ?, latitude = ?
+        WHERE user_id = ?;
+      `;
+      await connection.promise().query(sqlUpdatePremiumDonor, [availability, longitude, latitude, userId]);
 
-// Endpoint to update premium donor availability by user_id
-app.patch('/premiumdonors', authenticateToken, async (req, res) => {
-  const userId = req.user.userId; // Accessing user ID from authenticated token
-  const { availability } = req.body; // Updated availability sent in the request body
+      res.status(200).json({ message: 'Premium donor availability and location updated successfully.' });
+    } catch (error) {
+      console.error('Error updating premium donor availability and location:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
 
-  try {
-    // Check if the requester is authorized to edit the premium donor
-    const sqlUpdateAvailability = `
-      UPDATE premium_donors
-      SET availability = ?
-      WHERE user_id = ?;
-    `;
-    await connection.promise().query(sqlUpdateAvailability, [availability, userId]);
+  // New endpoint to update premium donor availability by user_id
+  app.patch('/premiumdonors/availability', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Accessing user ID from authenticated token
+    const { availability } = req.body; // Updated availability sent in the request body
 
-    res.status(200).json({ message: 'Premium donor availability updated successfully.' });
-  } catch (error) {
-    console.error('Error updating premium donor availability:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
+    try {
+      // Check if the requester is authorized to edit the premium donor
+      const sqlUpdateAvailability = `
+        UPDATE premium_donors
+        SET availability = ?
+        WHERE user_id = ?;
+      `;
+      await connection.promise().query(sqlUpdateAvailability, [availability, userId]);
 
+      res.status(200).json({ message: 'Premium donor availability updated successfully.' });
+    } catch (error) {
+      console.error('Error updating premium donor availability:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
 
-  
+  // New endpoint to update premium donor location by user_id
+  app.patch('/premiumdonors/location', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Accessing user ID from authenticated token
+    const { longitude, latitude } = req.body; // Updated longitude and latitude sent in the request body
+
+    try {
+      // Check if the requester is authorized to edit the premium donor
+      const sqlUpdateLocation = `
+        UPDATE premium_donors
+        SET longitude = ?, latitude = ?
+        WHERE user_id = ?;
+      `;
+      await connection.promise().query(sqlUpdateLocation, [longitude, latitude, userId]);
+
+      res.status(200).json({ message: 'Premium donor location updated successfully.' });
+    } catch (error) {
+      console.error('Error updating premium donor location:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
 };
 
 module.exports = UserProfilerController;

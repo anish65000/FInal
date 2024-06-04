@@ -3,6 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import StaffNavbar from '../Staff/StaffNavbar';
 import StaffSidebar from '../Staff/StaffSidebar';
+import AdminSidebar from './AdminSidebar';
 
 const RegisterBloodBankForm = () => {
   const [formData, setFormData] = useState({
@@ -73,7 +74,7 @@ const RegisterBloodBankForm = () => {
     <div>
        <ToastContainer />
        <div className="home bg-pro-white flex flex-col flex-grow ">
-      <StaffSidebar />
+      <AdminSidebar />
       <div className="flex flex-col flex-grow">
         <StaffNavbar />
         <div className="container mx-auto p-4">

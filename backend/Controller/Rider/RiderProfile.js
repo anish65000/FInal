@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('../authenticateToken');
 const upload = require('./multerConfig'); 
-
-
 const RiderProfilerController = (app, connection) => {
   // Helper function to run SQL queries using callback-based approach
   const query = (connection, sql, params) => {

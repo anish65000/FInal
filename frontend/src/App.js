@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
 import UserRegister from './Component/user/UserRegister';
 import UserLoginPage from './Component/user/UserLogin';  
 import HomePage from './Component/Homepage';
@@ -8,32 +7,28 @@ import StaffRegistration from './Component/Staff/StaffRegister';
 import BloodStock from './Component/Staff/BloodInventory';
 import DonorStockComponent from './Component/Staff/DonorInventory'; 
 import BloodTestForm from './Component/Staff/BloodTesting';
-import AddDonor from './Component/Staff/RegisterDonor';
+import AddDonor from './Component/Staff/AddDonor';
 import BloodRequestComponent from './Component/user/Recipients/BloodRequest';
 import BloodCompatibilityChecker from './Component/user/CompatibilityChecker';
 import PremiumDonorManagement from './Component/user/Recipients/PreimumDonor' 
-
 import StaffHomepage from './Component/Staff/StaffHomePage';
 import BloodRequestHistory from './Component/Staff/RequestHistory';
 import CampForm from './Component/Camp/CampDonation';
 import CampSearch from './Component/Camp/CampSearch ';
 import RegisterBloodBankForm from './Component/Admin/RegisterBloodBank';
 import BankDetails from './Component/user/Donor/BankDetails';
-//import BloodBankManagement from './Component/Admin/bank';
 import { UserProvider } from './Component/user/Usercontext';
 import NearbyDonorsMap from './Component/user/Recipients/NearbyDonor';
 import { StaffProvider } from './Component/Staff/StaffContext';
 import {RiderProvider} from './Component/Rider/RiderContext'
-
-import PremiumDonorRegistration from './Component/user/RegisterDonorForm';
-
+import PremiumDonorRegistration from './Component/user/Donor/PremiumDonorForm';
 import LoginPage from './Component/Staff/Loginpage';
 import UserHome from './Component/user/UserHomePage';
 import UserNavbar from './Component/user/UserNavbar';
 import BloodStockForm from './Component/Staff/BloodStockForm';
-import DonationForm from './Component/user/Blooddonation';
+import DonationForm from './Component/user/Donor/Blooddonation';
 import ManageDonations from './Component/Staff/ViewDonation';
-import AvailableSlotsForm from './Component/Doctor/Addtimeslots';
+import AvailableSlotsForm from './Component/Doctor/AddTimeSlot';
 import AppointmentDetails from './Component/Doctor/AppointmentDetails';
 import AppointmentList from './Component/Doctor/AppointmentList';
 import PremiumDonorDetails from './Component/user/Recipients/DonorDetails';
@@ -42,34 +37,26 @@ import ConfirmBooking from './Component/Doctor/ConfirmBooking';
 import AppointBloodDonation from './Component/Doctor/BloodAppointmentForm ';
 import BloodDonationFeedbackForm from './Component/user/Donor/BloodDonationFeedbackForm';
 import BloodAppointmentForm  from './Component/user/Donor/BookAppointmentForm';
-
 import AvailableSlotsComponent from './Component/user/Donor/AvailableSlotsComponent';
-//import BloodAppointmentForm from './Component/user/Donor/BookAppointmentForm';
-
-// import DonorRequests from './Component/user/DonorRequests';
-
+import AboutUs from './Component/user/AboutUs';
 import RiderHomePage from './Component/Rider/HomePage';
-
-import ViewProfile from './Component/user/Userprofile';
+import ViewProfile from './Component/user/UserProfile';
 import PremiumDonorProfile from './Component/user/ViewProfile';
 import ConfirmedAppointmentList  from './Component/Doctor/ConfirmedAppointmentDetails';
 import ConfirmedAppointment from './Component/Doctor/ConfirmedAppointment';
 import Appointments from './Component/user/Donor/GetAppointment';
-
 import RegisterCamp from './Component/Camp/AddCamp.';
 import ManageCamp from './Component/Camp/Camp';
-import CampsList from './Component/Camp/Camplist';
-
+import CampsList from './Component/Camp/CampList';
 import ManageBloodBanks from './Component/Admin/ManageBloodBank';
 import EditBloodBank from './Component/Admin/EditBloodBank';
-
-import RiderLogin from './Component/Rider/Loginpage';
+import RiderLogin from './Component/Rider/LoginPage';
 import BloodBankRiderRegistration from './Component/Rider/Register';
 import UrgentRequestList from './Component/Staff/Request';
 import DonorDetails from './Component/Staff/RequestedDonor';
-import UrgentRequestDetail from './Component/Staff/urgentrequestdetails';
-import RideRequestForm from './Component/Staff/Riderrequest'; // Added this line
-import BloodRequestList from './Component/user/Recipients/Requesthistory';
+import UrgentRequestDetail from './Component/Staff/UrgentRequestDetails';
+import RideRequestForm from './Component/Staff/RiderRequest'; 
+import BloodRequestList from './Component/user/Recipients/RequestHistory';
 import RequestedRides from './Component/Rider/RequestedRides';
 import RequestedRidesMap from  './Component/Rider/DonorLocation';
 import BookBloodAppointmentForm from './Component/user/Donor/BookAppointmentForm';
@@ -77,14 +64,19 @@ import DonationHistory from './Component/user/Donor/DonationHistory';
 import StaffProfile from './Component/Staff/StaffProfile';
 import RecipientsComponent from './Component/Staff/RecipientsInventory'
 import AddRecipient from './Component/Staff/AddRecipents'
-import ManageUsers from './Component/Admin/Mangeuser';
+import ManageUsers from './Component/Admin/ManageUser';
 import ManageStaff from './Component/Admin/ManageStaff';
-import RiderManagement from './Component/Admin/Managerider';
+import RiderManagement from './Component/Admin/ManageRider';
 import BloodInventoryDashboard from './Component/Admin/BloodStockDashboard';
-import RiderProfile from './Component/Rider/Riderprofile';
+import RiderProfile from './Component/Rider/RiderProfile';
 import StaffEdit from './Component/Staff/StaffEdit';
 import Dashboard from './Component/Admin/Admindashboard';
-import DonationRequests from './Component/user/donationrequests';
+import DonationRequests from './Component/user/DonationRequests';
+import UrgentRequestsList from './Component/user/Recipients/UserRequestDetails';
+import ManagePremiumDonor from './Component/Admin/ManagePremiuemDonor'
+import DonatedUserDetails from './Component/Doctor/ViewDonatedUser';
+import EndedUrgentRequestList from './Component/Staff/EndedRequest';
+
 function App() {
   return (
     <BrowserRouter>
@@ -112,7 +104,7 @@ function App() {
             <Route path="/register" element={<UserRegister />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/staff" element={<StaffRegistration />} />
-            
+            <Route path="/AboutUs" element={<AboutUs />} />         
             <Route path="/bloodstock" element={<BloodStock />} />
             <Route path="/donorstock" element={<DonorStockComponent />} />
             <Route path="/testingblood" element={<BloodTestForm />} />
@@ -157,21 +149,18 @@ function App() {
             <Route path="/ManageUsers" element={<  ManageUsers />} />
             <Route path="/ManageStaffs" element={<  ManageStaff />} />
             <Route path="/ManageRiders" element={<  RiderManagement />} />
-
-            <Route path="/BloodInventoryDashboard" element={<   BloodInventoryDashboard />} />
-            
+            <Route path="/BloodInventoryDashboard" element={<   BloodInventoryDashboard />} />         
             <Route path="/riderprofile" element={<  RiderProfile />} />
             <Route path="/staffedit" element={<  StaffEdit  />} />
             <Route path="/staffprofile" element={<  StaffProfile  />} />
-            <Route path="/dashboard" element={<    Dashboard  />} />
-            <Route path="/DonationRequests" element={<     DonationRequests />} />
-
-           
+            <Route path="/dashboard" element={< Dashboard />} />
+            <Route path="/DonationRequests" element={< DonationRequests />} />
+            <Route path="/UrgentRequestsList" element={< UrgentRequestsList />} />
+            <Route path="/ManagePremiumDonor" element={< ManagePremiumDonor />} />
+            <Route path="/DonatedUserDetails" element={< DonatedUserDetails  />} />
+            <Route path="/Endedurgentrequest" element={< EndedUrgentRequestList  />} />
             
-          
-           
-             
-          </Routes>
+        </Routes>
         </StaffProvider>
         </RiderProvider>
       </UserProvider>
